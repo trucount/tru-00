@@ -1,0 +1,862 @@
+allow_embedding: false
+config:
+  client: {}
+  server: {}
+correct_dependency_ids: {}
+db_schema:
+  files:
+    client: none
+    columns:
+    - admin_ui: {order: 0, width: 200}
+      name: filename
+      type: string
+    - admin_ui: {order: 2, width: 200}
+      name: author
+      target: users
+      type: link_single
+    - admin_ui: {order: 3, width: 200}
+      name: created
+      type: datetime
+    server: full
+    title: Files
+  users:
+    client: none
+    columns:
+    - admin_ui: {order: 0, width: 200}
+      name: email
+      type: string
+    - admin_ui: {order: 1, width: 200}
+      name: enabled
+      type: bool
+    - admin_ui: {order: 2, width: 200}
+      name: last_login
+      type: datetime
+    - admin_ui: {order: 3, width: 200}
+      name: password_hash
+      type: string
+    - admin_ui: {order: 4, width: 200}
+      name: n_password_failures
+      type: number
+    - admin_ui: {order: 5, width: 200}
+      name: confirmed_email
+      type: bool
+    - admin_ui: {order: 6, width: 200}
+      name: signed_up
+      type: datetime
+    - admin_ui: {order: 7, width: 200}
+      name: name
+      type: string
+    server: full
+    title: Users
+dependencies: []
+dependency_code: {}
+dependency_ids: {}
+dependency_order: []
+exported_table_schema:
+- client: none
+  columns:
+    2Pc9Kvr1A3Y=:
+      admin_ui: {order: 3, width: 200}
+      name: created
+      type: datetime
+    6+nzklVL9gY=:
+      admin_ui: {order: 0, width: 200}
+      name: filename
+      type: string
+    VpyllHRvdls=:
+      admin_ui: {order: 2, width: 200}
+      backend: anvil.tables.Row
+      name: author
+      table_id: 844403
+      type: liveObject
+  id: 844402
+  name: Files
+  python_name: files
+  server: full
+- client: none
+  columns:
+    61C2m5b_gSk=:
+      admin_ui: {order: 7, width: 200}
+      name: name
+      type: string
+    8tPEv3NImzc=:
+      admin_ui: {order: 2, width: 200}
+      name: last_login
+      type: datetime
+    FrPtKjFKtHY=:
+      admin_ui: {order: 1, width: 200}
+      name: enabled
+      type: bool
+    TOBymJYKqOs=:
+      admin_ui: {order: 0, width: 200}
+      name: email
+      type: string
+    gsFti2MUaMk=:
+      admin_ui: {order: 6, width: 200}
+      name: signed_up
+      type: datetime
+    tPJEq00XP+E=:
+      admin_ui: {order: 4, width: 200}
+      name: n_password_failures
+      type: number
+    vcgoc1VhIAk=:
+      admin_ui: {order: 3, width: 200}
+      name: password_hash
+      type: string
+    xCmdVCTapMk=:
+      admin_ui: {order: 5, width: 200}
+      name: confirmed_email
+      type: bool
+  id: 844403
+  name: Users
+  python_name: users
+  server: full
+extra_files: {__init__.py: IwojIFRoaXMgcmVwb3NpdG9yeSBpcyBhbiBBbnZpbCBhcHAuIExlYXJuIG1vcmUgYXQgaHR0cHM6Ly9hbnZpbC53b3Jrcy8KIyBUbyBydW4gdGhlIHNlcnZlci1zaWRlIGNvZGUgb24geW91ciBvd24gbWFjaGluZSwgcnVuOgojIHBpcCBpbnN0YWxsIGFudmlsLXVwbGluawojIHB5dGhvbiAtbSBhbnZpbC5ydW5fYXBwX3ZpYV91cGxpbmsgWW91ckFwcFBhY2thZ2VOYW1lCgpfX3BhdGhfXyA9IFtfX3BhdGhfX1swXSArICIvc2VydmVyX2NvZGUiLCBfX3BhdGhfX1swXSArICIvY2xpZW50X2NvZGUiXQo=}
+forms:
+- class_name: Frame
+  code: "from ._anvil_designer import FrameTemplate\nfrom anvil import *\nimport anvil.server\nimport anvil.users\nimport anvil.tables as tables\nimport anvil.tables.query as q\nfrom anvil.tables import app_tables\nfrom ..Reports import Reports\nfrom ..Sales import Sales\n\n#This is your startup form. It has a sidebar with navigation links and a content panel where page content will be added.\nclass Frame(FrameTemplate):\n  def __init__(self, **properties):\n    # Set Form properties and Data Bindings.\n    self.init_components(**properties)\n    #Present users with a login form with just one line of code:\n    #anvil.users.login_with_form()\n\n    #Set the Plotly plots template to match the theme of the app\n    Plot.templates.default = \"rally\"\n    #When the app starts up, the Sales form will be added to the page\n    self.content_panel.add_component(Sales())\n    #Change the color of the sales_page_link to indicate that the Sales page has been selected\n    self.sales_page_link.background = app.theme_colors['Primary Container']\n    \n\n  def sales_page_link_click(self, **event_args):\n    \"\"\"This method is called when the link is clicked\"\"\"\n    #Clear the content panel and add the Sales Form\n    self.content_panel.clear()\n    self.content_panel.add_component(Sales())\n    #Change the color of the sales_page_link to indicate that the Sales page has been selected\n    self.sales_page_link.background = app.theme_colors['Primary Container']\n    self.reports_page_link.background = \"transparent\"\n\n  def reports_page_link_click(self, **event_args):\n    \"\"\"This method is called when the link is clicked\"\"\"\n    #Clear the content panel and add the Reports Form\n    self.content_panel.clear()\n    self.content_panel.add_component(Reports())\n    #Change the color of the sales_page_link to indicate that the Reports page has been selected\n    self.reports_page_link.background = app.theme_colors['Primary Container']\n    self.sales_page_link.background = \"transparent\"\n\n  #If using the Users service, uncomment this code to log out the user:\n  # def signout_link_click(self, **event_args):\n  #   \"\"\"This method is called when the link is clicked\"\"\"\n  #   anvil.users.logout()\n  #   open_form('Logout')\n\n\n\n\n\n\n\n\n"
+  components:
+  - components:
+    - layout_properties: {grid_position: 'LLNAAG,BRSXTM'}
+      name: spacer_1
+      properties: {height: 32}
+      type: Spacer
+    - event_bindings: {click: sales_page_link_click}
+      layout_properties: {grid_position: 'ATKKKJ,DBSYGY'}
+      name: sales_page_link
+      properties: {align: center, background: '', bold: false, border: '', enabled: true, font: '', font_size: 18, foreground: '', icon: 'fa:bar-chart', icon_align: left, italic: false, role: null, spacing_above: small, spacing_below: small, text: ' Sales', tooltip: '', underline: false, visible: true}
+      type: Button
+    - event_bindings: {click: reports_page_link_click}
+      layout_properties: {grid_position: 'AODCYE,XQMJOX'}
+      name: reports_page_link
+      properties: {align: center, background: '', bold: false, border: '', enabled: true, font: '', font_size: 18, foreground: '', icon: 'fa:pie-chart', icon_align: left, italic: false, role: null, spacing_above: small, spacing_below: small, text: ' Reports', tooltip: '', underline: false, visible: true}
+      type: Button
+    - layout_properties: {grid_position: 'KHSNGK,VNCASN'}
+      name: label_1
+      properties: {align: left, background: '', bold: false, border: '', font: '', font_size: null, foreground: '', icon: '', icon_align: left, italic: false, role: null, spacing_above: small, spacing_below: small, text: '                                                                                 ', tooltip: '', underline: false, visible: true}
+      type: Label
+    - event_bindings: {click: signout_link_click}
+      layout_properties: {grid_position: 'QDWBQK,DOAOHZ'}
+      name: signout_link
+      properties: {align: center, background: '', bold: false, border: '', enabled: true, font: '', font_size: null, foreground: 'theme:Primary', icon: 'fa:sign-out', icon_align: left, italic: false, role: null, spacing_above: small, spacing_below: small, text: Sign out, tooltip: '', underline: false, visible: true}
+      type: Button
+    layout_properties: {slot: left-nav}
+    name: column_panel_2
+    properties: {col_widths: '{}'}
+    type: ColumnPanel
+  - layout_properties: {slot: logo}
+    name: image_1
+    properties: {background: '', border: '', display_mode: shrink_to_fit, foreground: '', height: 111, horizontal_align: center, role: null, source: 'data:image/png;base64,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', spacing_above: small, spacing_below: small, tooltip: '', vertical_align: center, visible: true}
+    type: Image
+  - layout_properties: {slot: default}
+    name: content_panel
+    properties: {}
+    type: ColumnPanel
+  container:
+    properties: {html: '@theme:standard-page.html'}
+    type: HtmlTemplate
+  id: W4AJINNNK6GE56SS5BBPZFEUYSYVUQXM
+  is_package: true
+- class_name: Frame.RowTemplate1
+  code: |
+    from ._anvil_designer import RowTemplate1Template
+    from anvil import *
+    import anvil.server
+    import anvil.users
+    import anvil.tables as tables
+    import anvil.tables.query as q
+    from anvil.tables import app_tables
+
+    class RowTemplate1(RowTemplate1Template):
+      def __init__(self, **properties):
+        # Set Form properties and Data Bindings.
+        self.init_components(**properties)
+
+        # Any code you write here will run before the form opens.
+  components:
+  - data_bindings:
+    - {code: 'self.item[''created''].strftime("%m/%d/%Y")', property: text}
+    layout_properties: {column: KXESPC}
+    name: label_1
+    properties: {}
+    type: Label
+  - data_bindings:
+    - {code: 'self.item[''author''][''name'']', property: text}
+    layout_properties: {column: VSSQIK}
+    name: label_2
+    properties: {align: left, background: '', bold: false, border: '', font: '', font_size: null, foreground: '', icon: '', icon_align: left, italic: false, role: null, spacing_above: small, spacing_below: small, text: '', tooltip: '', underline: false, visible: true}
+    type: Label
+  container: {type: DataRowPanel}
+  id: '1685451964302579052587676.3344'
+  is_package: true
+- class_name: Logout
+  code: |+
+    from ._anvil_designer import LogoutTemplate
+    from anvil import *
+    import anvil.server
+    import anvil.users
+    import anvil.tables as tables
+    import anvil.tables.query as q
+    from anvil.tables import app_tables
+
+    class Logout(LogoutTemplate):
+      def __init__(self, **properties):
+        # Set Form properties and Data Bindings.
+        self.init_components(**properties)
+
+        # Any code you write here will run before the form opens.
+
+      def button_1_click(self, **event_args):
+        """This method is called when the button is clicked"""
+        anvil.users.login_with_form()
+        open_form('Frame')
+
+  components:
+  - layout_properties: {grid_position: 'FQRMKP,BSXWHL'}
+    name: spacer_1
+    properties: {height: 70}
+    type: Spacer
+  - components:
+    - layout_properties: {grid_position: 'XFEYMF,WZXJGT'}
+      name: label_1
+      properties: {align: center, background: '', bold: false, border: '', font: '', font_size: null, foreground: '', icon: '', icon_align: left, italic: false, role: title, spacing_above: small, spacing_below: small, text: You have been signed out!, tooltip: '', underline: false, visible: true}
+      type: Label
+    - event_bindings: {click: button_1_click}
+      layout_properties: {grid_position: 'OHNHTP,TQKEOP'}
+      name: button_1
+      properties: {align: center, background: '', bold: false, border: '', enabled: true, font: '', font_size: null, foreground: '', icon: '', icon_align: left, italic: false, role: filled, spacing_above: small, spacing_below: small, text: Sign In, tooltip: '', underline: false, visible: true}
+      type: Button
+    layout_properties: {grid_position: 'OMSMPN,JFVVZD'}
+    name: card_1
+    properties: {background: '', border: '', col_spacing: medium, col_widths: '{}', foreground: '', role: card, spacing_above: small, spacing_below: small, tooltip: '', visible: true, wrap_on: mobile}
+    type: ColumnPanel
+  container:
+    properties: {col_widths: '{}'}
+    type: ColumnPanel
+  id: '1685456931247635017053252.7155'
+  is_package: true
+- class_name: Reports
+  code: "from ._anvil_designer import ReportsTemplate\nfrom anvil import *\nimport plotly.graph_objects as go\nimport anvil.server\nimport anvil.users\nimport anvil.tables as tables\nimport anvil.tables.query as q\nfrom anvil.tables import app_tables\n\nclass Reports(ReportsTemplate):\n  def __init__(self, **properties):\n    # Set Form properties and Data Bindings.\n    self.init_components(**properties)\n    # Any code you write here will run before the form opens.\n\n    #Populate plot_1 with dummy data. All three Bar charts will be added to the same figure\n    self.plot_1.data = [\n      go.Bar(\n        x=[2019, 2020, 2021, 2022, 2023],\n        y=[510, 620, 687, 745, 881],\n        name=\"Europe\"\n    ),\n      go.Bar(\n        x=[2019, 2020, 2021, 2022, 2023],\n        y=[733, 880, 964, 980, 1058],\n        name=\"Americas\"\n    ),\n      go.Bar(\n        x=[2019, 2020, 2021, 2022, 2023],\n        y=[662, 728, 794, 814, 906],\n        name=\"Asia\"\n    )\n    ]\n\n    #Return the figure from the server to populate plot_2\n    self.plot_2.figure = anvil.server.call('return_bar_charts')\n\n    self.plot_3.data = [\n      go.Pie(\n        labels=[\"Mobile\", \"Tablet\", \"Desktop\"],\n        values=[2650, 755, 9525]\n      )\n    ]\n    \n\n"
+  components:
+  - components:
+    - layout_properties: {grid_position: 'KHHYTD,VLBHJI'}
+      name: label_2
+      properties: {align: left, background: '', bold: false, border: '', font: '', font_size: null, foreground: '', icon: '', icon_align: left, italic: false, role: body, spacing_above: small, spacing_below: small, text: PAGE VIEWS, tooltip: '', underline: false, visible: true}
+      type: Label
+    - components:
+      - layout_properties: {grid_position: 'EVNISV,XJQTTQ'}
+        name: label_5
+        properties: {align: left, background: '', bold: false, border: '', font: '', font_size: null, foreground: '', icon: '', icon_align: left, italic: false, role: headline, spacing_above: small, spacing_below: small, text: '12930', tooltip: '', underline: false, visible: true}
+        type: Label
+      - layout_properties: {grid_position: 'EVNISV,CNJWYO'}
+        name: label_8
+        properties: {align: left, background: '', bold: false, border: '', font: '', font_size: 32, foreground: 'theme:Primary', icon: 'fa:caret-up', icon_align: left, italic: false, role: null, spacing_above: small, spacing_below: small, text: '', tooltip: '', underline: false, visible: true}
+        type: Label
+      layout_properties: {grid_position: 'UKUHCZ,JZCHYN'}
+      name: flow_panel_1
+      properties: {}
+      type: FlowPanel
+    layout_properties: {grid_position: 'WSLHTU,RGQMIU'}
+    name: card_2
+    properties: {col_widths: '{}', role: card}
+    type: ColumnPanel
+  - components:
+    - layout_properties: {grid_position: 'YTQXRZ,WVLWFF'}
+      name: label_4
+      properties: {align: left, background: '', bold: false, border: '', font: '', font_size: null, foreground: '', icon: '', icon_align: left, italic: false, role: body, spacing_above: small, spacing_below: small, text: AVG TIME, tooltip: '', underline: false, visible: true}
+      type: Label
+    - components:
+      - layout_properties: {grid_position: 'QQVKNZ,MVZAXD'}
+        name: label_7
+        properties: {align: left, background: '', bold: false, border: '', font: '', font_size: null, foreground: '', icon: '', icon_align: left, italic: false, role: headline, spacing_above: small, spacing_below: small, text: 42 mins., tooltip: '', underline: false, visible: true}
+        type: Label
+      - layout_properties: {grid_position: 'QQVKNZ,YHCKMO'}
+        name: label_10
+        properties: {align: left, background: '', bold: false, border: '', font: '', font_size: 32, foreground: 'theme:Error', icon: 'fa:caret-down', icon_align: left, italic: false, role: null, spacing_above: small, spacing_below: small, text: '', tooltip: '', underline: false, visible: true}
+        type: Label
+      layout_properties: {grid_position: 'LUUIKF,LIDJIO'}
+      name: flow_panel_3
+      properties: {}
+      type: FlowPanel
+    layout_properties: {grid_position: 'WSLHTU,GHTBXT'}
+    name: card_4
+    properties: {col_widths: '{}', role: card}
+    type: ColumnPanel
+  - components:
+    - layout_properties: {grid_position: 'KDZSKT,QUJOLO'}
+      name: label_3
+      properties: {align: left, background: '', bold: false, border: '', font: '', font_size: null, foreground: '', icon: '', icon_align: left, italic: false, role: body, spacing_above: small, spacing_below: small, text: BOUNCE RATE, tooltip: '', underline: false, visible: true}
+      type: Label
+    - components:
+      - layout_properties: {grid_position: 'DEOGJL,QLJHQM'}
+        name: label_6
+        properties: {align: left, background: '', bold: false, border: '', font: '', font_size: null, foreground: '', icon: '', icon_align: left, italic: false, role: headline, spacing_above: small, spacing_below: small, text: 34%, tooltip: '', underline: false, visible: true}
+        type: Label
+      - layout_properties: {grid_position: 'YYSDRE,SFJZYN'}
+        name: label_9
+        properties: {align: left, background: '', bold: false, border: '', font: '', font_size: 32, foreground: 'theme:Primary', icon: 'fa:caret-down', icon_align: left, italic: false, role: null, spacing_above: small, spacing_below: small, text: '', tooltip: '', underline: false, visible: true}
+        type: Label
+      layout_properties: {grid_position: 'DEOGJL,CGNKMQ'}
+      name: flow_panel_2
+      properties: {}
+      type: FlowPanel
+    layout_properties: {grid_position: 'WSLHTU,UEKQLD'}
+    name: card_3
+    properties: {col_widths: '{}', role: card}
+    type: ColumnPanel
+  - components:
+    - layout_properties: {grid_position: 'TYZKNT,WZQHNH'}
+      name: label_1
+      properties: {align: left, background: '', bold: false, border: '', font: '', font_size: null, foreground: '', icon: '', icon_align: left, italic: false, role: title, spacing_above: small, spacing_below: small, text: Sign-ups, tooltip: '', underline: false, visible: true}
+      type: Label
+    - layout_properties: {grid_position: 'LNSHOL,HLYVYY'}
+      name: plot_1
+      properties: {}
+      type: Plot
+    layout_properties: {grid_position: 'TMIMPR,WMQMZT'}
+    name: card_1
+    properties: {col_widths: '{}', role: card}
+    type: ColumnPanel
+  - components:
+    - layout_properties: {grid_position: 'YCGUEF,NJDVES'}
+      name: label_11
+      properties: {align: left, background: '', bold: false, border: '', font: '', font_size: null, foreground: '', icon: '', icon_align: left, italic: false, role: title, spacing_above: small, spacing_below: small, text: Results, tooltip: '', underline: false, visible: true}
+      type: Label
+    - layout_properties: {grid_position: 'XRTCSL,FLVKQE'}
+      name: plot_2
+      properties: {}
+      type: Plot
+    layout_properties: {grid_position: 'NXBMON,OSRNEE'}
+    name: card_5
+    properties: {col_widths: '{}', role: card}
+    type: ColumnPanel
+  - components:
+    - layout_properties: {grid_position: 'FQHSUJ,OXGDPN'}
+      name: label_12
+      properties: {align: left, background: '', bold: false, border: '', font: '', font_size: null, foreground: '', icon: '', icon_align: left, italic: false, role: title, spacing_above: small, spacing_below: small, text: Devices, tooltip: '', underline: false, visible: true}
+      type: Label
+    - layout_properties: {grid_position: 'KFRZLY,TMRYZA'}
+      name: plot_3
+      properties: {}
+      type: Plot
+    layout_properties: {grid_position: 'NXBMON,BRKAYU'}
+    name: card_6
+    properties: {col_widths: '{}', role: card}
+    type: ColumnPanel
+  container:
+    properties: {col_widths: '{}'}
+    type: ColumnPanel
+  id: '1685452921916319245502744.5724'
+  is_package: true
+- class_name: Sales
+  code: "from ._anvil_designer import SalesTemplate\nfrom anvil import *\nimport anvil.server\nimport anvil.users\nimport anvil.tables as tables\nimport anvil.tables.query as q\nfrom anvil.tables import app_tables\nimport plotly.graph_objects as go\n\nclass Sales(SalesTemplate):\n  def __init__(self, **properties):\n    # Set Form properties and Data Bindings.\n    self.init_components(**properties)\n    # Any code you write here will run before the form opens.\n    #The x-axis of plot_1 will be the months of the year. The y-axis will be dummy data returned from the server\n    self.x_months = [\"Jan\", \"Feb\", \"Mar\", \"Apr\", \"May\", \"Jun\", \"Jul\", \"Aug\", \"Sept\", \"Oct\", \"Nov\", \"Dec\"]\n    #Get the y-values from the server\n    self.y_values = anvil.server.call('return_data', \"2023\")\n    self.create_line_graph()\n    \n    self.plot_2.data = [\n      go.Pie(\n        labels=[\"Completed\", \"In progress\", \"Needs Review\", \"Not started\"],\n        values=[30, 21, 10, 39 ],\n        hole=.5\n      )\n    ]\n\n    #Set the contents of the data grid (which has a repeating panel inside) to the contents of \n    #the Files table. This is done on the secure server where you might only want to return user-visible data\n    self.repeating_panel_1.items = anvil.server.call('return_table')\n\n  def create_line_graph(self):\n    self.plot_1.data = [\n      go.Scatter(\n        x=self.x_months,\n        y=self.y_values[0],\n        fill=\"tozeroy\",\n        name=\"Product A\"\n      ),\n        go.Scatter(\n        x=self.x_months,\n        y=self.y_values[1],\n        fill=\"tonexty\",\n        name=\"Product B\"\n      )\n    ]\n\n  #Update the values in the line graph based on the selected value of the drop down menu\n  def drop_down_1_change(self, **event_args):\n    \"\"\"This method is called when an item is selected\"\"\"\n    self.y_values = anvil.server.call('return_data', self.drop_down_1.selected_value)\n    self.create_line_graph()\n    \n\n"
+  components:
+  - components:
+    - components:
+      - layout_properties: {grid_position: 'SPXODK,DZNMMD'}
+        name: label_12
+        properties: {align: left, background: '', bold: false, border: '', font: '', font_size: 50, foreground: 'theme:Primary', icon: 'fa:line-chart', icon_align: left, italic: false, role: null, spacing_above: small, spacing_below: small, text: '', tooltip: '', underline: false, visible: true}
+        type: Label
+      - layout_properties: {grid_position: 'SPXODK,CIEZQP OBHDPA,LXIAIC'}
+        name: label_1
+        properties: {align: left, background: '', bold: false, border: '', font: '', font_size: null, foreground: '', icon: '', icon_align: left, italic: false, role: body, spacing_above: small, spacing_below: small, text: VALUE, tooltip: '', underline: false, visible: true}
+        type: Label
+      - layout_properties: {grid_position: 'SPXODK,CIEZQP JVVXKJ,FTWMOM'}
+        name: label_5
+        properties: {align: left, background: '', bold: false, border: '', font: '', font_size: null, foreground: '', icon: '', icon_align: left, italic: false, role: headline, spacing_above: none, spacing_below: small, text: '$500,000', tooltip: '', underline: false, visible: true}
+        type: Label
+      layout_properties: {grid_position: 'RICELT,OEMWEL'}
+      name: card_1
+      properties: {col_widths: '{"DZNMMD":20,"CIEZQP":40}', role: card}
+      type: ColumnPanel
+    - components:
+      - layout_properties: {grid_position: 'PGTFGN,JKJDQA'}
+        name: label_10
+        properties: {align: left, background: '', bold: false, border: '', font: '', font_size: 50, foreground: 'theme:Primary', icon: 'fa:money', icon_align: left, italic: false, role: null, spacing_above: small, spacing_below: small, text: '', tooltip: '', underline: false, visible: true}
+        type: Label
+      - layout_properties: {grid_position: 'PGTFGN,RWDROK MSOHDH,KMEFSK'}
+        name: label_3
+        properties: {align: left, background: '', bold: false, border: '', font: '', font_size: null, foreground: '', icon: '', icon_align: left, italic: false, role: body, spacing_above: small, spacing_below: small, text: SALES, tooltip: '', underline: false, visible: true}
+        type: Label
+      - layout_properties: {grid_position: 'PGTFGN,RWDROK WZCEHY,EIALHQ'}
+        name: label_7
+        properties: {align: left, background: '', bold: false, border: '', font: '', font_size: null, foreground: '', icon: '', icon_align: left, italic: false, role: headline, spacing_above: none, spacing_below: small, text: '$104,000', tooltip: '', underline: false, visible: true}
+        type: Label
+      layout_properties: {grid_position: 'RICELT,TNAJPS'}
+      name: card_3
+      properties: {col_widths: '{"JKJDQA":20,"RWDROK":40}', role: card}
+      type: ColumnPanel
+    - components:
+      - layout_properties: {grid_position: 'CWAHBW,PEJLQU'}
+        name: label_11
+        properties: {align: left, background: '', bold: false, border: '', font: '', font_size: 50, foreground: 'theme:Primary', icon: 'fa:users', icon_align: left, italic: false, role: null, spacing_above: small, spacing_below: small, text: '', tooltip: '', underline: false, visible: true}
+        type: Label
+      - layout_properties: {grid_position: 'CWAHBW,PMLAHK YNPGEU,LHVYOS'}
+        name: label_2
+        properties: {align: left, background: '', bold: false, border: '', font: '', font_size: null, foreground: '', icon: '', icon_align: left, italic: false, role: body, spacing_above: small, spacing_below: small, text: NEW CLIENTS, tooltip: '', underline: false, visible: true}
+        type: Label
+      - layout_properties: {grid_position: 'CWAHBW,PMLAHK XEWCHO,AWRSEV'}
+        name: label_6
+        properties: {align: left, background: '', bold: false, border: '', font: '', font_size: null, foreground: '', icon: '', icon_align: left, italic: false, role: headline, spacing_above: none, spacing_below: small, text: '812', tooltip: '', underline: false, visible: true}
+        type: Label
+      layout_properties: {grid_position: 'RICELT,CGCSYJ'}
+      name: card_2
+      properties: {col_widths: '{"PEJLQU":20,"PMLAHK":40}', role: card}
+      type: ColumnPanel
+    - components:
+      - layout_properties: {grid_position: 'EMOITM,GHKWWK'}
+        name: label_9
+        properties: {align: left, background: '', bold: false, border: '', font: '', font_size: 50, foreground: 'theme:Primary', icon: 'fa:pie-chart', icon_align: left, italic: false, role: null, spacing_above: small, spacing_below: small, text: '', tooltip: '', underline: false, visible: true}
+        type: Label
+      - layout_properties: {grid_position: 'EMOITM,VBOZUY XMMHJR,FHNILM'}
+        name: label_4
+        properties: {align: left, background: '', bold: false, border: '', font: '', font_size: null, foreground: '', icon: '', icon_align: left, italic: false, role: body, spacing_above: small, spacing_below: small, text: TARGET RATIO, tooltip: '', underline: false, visible: true}
+        type: Label
+      - layout_properties: {grid_position: 'EMOITM,VBOZUY VGJFGK,RKGDCB'}
+        name: label_8
+        properties: {align: left, background: '', bold: false, border: '', font: '', font_size: null, foreground: '', icon: '', icon_align: left, italic: false, role: headline, spacing_above: none, spacing_below: small, text: 90%, tooltip: '', underline: false, visible: true}
+        type: Label
+      layout_properties: {grid_position: 'RICELT,FZREAD'}
+      name: card_4
+      properties: {col_widths: '{"GHKWWK":20,"VBOZUY":40}', role: card}
+      type: ColumnPanel
+    - components:
+      - layout_properties: {grid_position: 'NNDSER,RCPRGZ'}
+        name: label_13
+        properties: {align: left, background: '', bold: false, border: '', font: '', font_size: null, foreground: '', icon: '', icon_align: left, italic: false, role: title, spacing_above: small, spacing_below: small, text: Progress, tooltip: '', underline: false, visible: true}
+        type: Label
+      - layout_properties: {grid_position: 'HLFJOM,CDHIEY'}
+        name: plot_2
+        properties: {height: '370', interactive: true, spacing_above: small, spacing_below: small, tooltip: '', visible: true}
+        type: Plot
+      layout_properties: {grid_position: 'ZWYAMV,XJDGPO'}
+      name: card_5
+      properties: {col_widths: '{}', role: card}
+      type: ColumnPanel
+    - components:
+      - layout_properties: {grid_position: 'ZCOOLF,ZNQHMJ'}
+        name: label_15
+        properties: {align: left, background: '', bold: false, border: '', font: '', font_size: null, foreground: '', icon: '', icon_align: left, italic: false, role: title, spacing_above: small, spacing_below: small, text: Files, tooltip: '', underline: false, visible: true}
+        type: Label
+      - components:
+        - layout_properties: {}
+          name: repeating_panel_1
+          properties: {item_template: Frame.RowTemplate1, spacing_above: none, spacing_below: none}
+          type: RepeatingPanel
+        layout_properties: {grid_position: 'IZDBPZ,LYWXJH'}
+        name: data_grid_1
+        properties:
+          auto_header: true
+          background: ''
+          border: ''
+          columns:
+          - {$$hashKey: 'object:16742', data_key: filename, id: KJILYV, title: Filename}
+          - {$$hashKey: 'object:16743', data_key: author, id: VSSQIK, title: Author}
+          - {$$hashKey: 'object:16744', data_key: created, id: KXESPC, title: Created}
+          foreground: ''
+          role: null
+          rows_per_page: 20
+          show_page_controls: true
+          spacing_above: small
+          spacing_below: small
+          tooltip: ''
+          visible: true
+          wrap_on: never
+        type: DataGrid
+      layout_properties: {grid_position: 'ZWYAMV,QWVFNP'}
+      name: card_6
+      properties: {col_widths: '{}', role: card}
+      type: ColumnPanel
+    - components:
+      - layout_properties: {grid_position: 'COJSHM,SJUNTI'}
+        name: label_14
+        properties: {align: left, background: '', bold: false, border: '', font: '', font_size: null, foreground: '', icon: '', icon_align: left, italic: false, role: title, spacing_above: small, spacing_below: small, text: Sales Overview, tooltip: '', underline: false, visible: true}
+        type: Label
+      - event_bindings: {change: drop_down_1_change}
+        layout_properties: {grid_position: 'TZAZUJ,VVWOID'}
+        name: drop_down_1
+        properties:
+          align: full
+          background: ''
+          bold: false
+          border: ''
+          enabled: true
+          font: ''
+          font_size: null
+          foreground: ''
+          include_placeholder: false
+          italic: false
+          items: ['2023', '2022', '2021']
+          placeholder: ''
+          role: null
+          spacing_above: small
+          spacing_below: small
+          tooltip: ''
+          underline: false
+          visible: true
+        type: DropDown
+      - layout_properties: {grid_position: 'TZAZUJ,EQOCFH'}
+        name: spacer_1
+        properties: {height: 32}
+        type: Spacer
+      - layout_properties: {grid_position: 'SUCQSU,YFBPJA'}
+        name: plot_1
+        properties: {}
+        type: Plot
+      layout_properties: {grid_position: 'VBSHUS,ITBTPJ'}
+      name: card_7
+      properties: {col_widths: '{"VVWOID":20,"EQOCFH":40}', role: card}
+      type: ColumnPanel
+    layout_properties:
+      col_widths: {}
+      grid_position: ODOKZJ,JPHMQN
+    name: column_panel_1
+    properties: {background: '', border: '', col_spacing: medium, col_widths: '{"XJDGPO":30,"QWVFNP":30}', foreground: '', role: null, spacing_above: none, spacing_below: none, tooltip: '', visible: true, wrap_on: mobile}
+    type: ColumnPanel
+  container: {type: ColumnPanel}
+  id: '1685452827810810401583930.4839'
+  is_package: true
+modules: []
+name: Dashboard Template A
+native_deps: {head_html: '<link href="https://fonts.googleapis.com/css2?family=Eczar:wght@400;600&family=Roboto+Condensed:wght@300;400;700&display=swap" rel="stylesheet" rel="preload" as="font" crossorigin="anonymous">'}
+package_name: Dashboard_Template_A
+runtime_options: {client_version: '3', preview_v3: true, server_spec: null, server_version: python3-sandbox, version: 2}
+scripts: []
+server_modules:
+- code: "import anvil.users\nimport anvil.tables as tables\nimport anvil.tables.query as q\nimport plotly.graph_objects as go\nfrom anvil.tables import app_tables\nimport anvil.server\nimport anvil.plotly_templates\n\nanvil.plotly_templates.set_default(\"rally\")\n\n#Return the contents of the Files data table. If this table included secure data, \n#we would only want to return the data that can be user visible\n@anvil.server.callable\ndef return_table():\n  return app_tables.files.search()\n\n@anvil.server.callable\ndef return_data(year):\n  #Your code to process and return data goes here\n  if year == \"2023\":\n    return [\n      [11342, 11673, 12684, 12933, 13782, 13001, 13532, 13776, 14609, 15076, 15663, 15989], \n      [14331, 14887, 13520, 13021, 11000, 12956, 13451, 14805, 16004, 16599, 17885, 19053]\n    ]\n  elif year == \"2022\":\n    return [\n      [8695, 8704, 9201, 9554, 9760, 9963, 10003, 10889, 11073, 11992, 12743, 11221], \n      [12332, 12633, 13000, 13843, 12849, 12675, 13742, 14009, 14376, 14587, 15002, 14556]\n    ]\n  elif year == \"2021\":\n    return [\n      [5680, 5743, 5802, 6003, 6212, 7004, 6854, 6013, 6599, 7032, 7453, 7960, 8734], \n      [7832, 7945, 8432, 8049, 8775, 9321, 9674, 9900, 10342, 11483, 11954, 12511, 12030]\n    ]\n\n@anvil.server.callable\ndef return_bar_charts():\n  #You can use any Python plotting library on the server including Plotly Express, MatplotLib, Seaborn, Bokeh\n  fig = go.Figure(\n    [\n      go.Bar(\n        y=[\"Strongly Disagree\", \"Disagree\", \"Neutral\", \"Agree\", \"Strongly Agree\"],\n        x=[13, 21, 64, 119, 94],\n        orientation='h',\n        name=\"New Users\"\n        ),\n      go.Bar(\n        y=[\"Strongly Disagree\", \"Disagree\", \"Neutral\", \"Agree\", \"Strongly Agree\"],\n        x=[24, 35, 80, 250, 274],\n        orientation='h',\n        name=\"Existing Users\"\n      ),\n    ]\n  )\n  \n  fig.update_layout(\n    barmode=\"stack\",\n  )\n  return fig\n"
+  id: '1685452365618467403552812.8588'
+  name: ServerModule1
+services:
+- client_config: {}
+  server_config: {}
+  source: /runtime/services/tables.yml
+- client_config: {allow_signup: true, confirm_email: false, enable_automatically: true, use_email: true, use_google: false}
+  server_config: {user_table: users}
+  source: /runtime/services/anvil/users.yml
+startup: {module: Frame, type: form}
+startup_form: null
+theme:
+  assets:
+  - {content: PGRpdiBjbGFzcz0ic3RydWN0dXJlIj4KICA8ZGl2IGNsYXNzPSJuYXYtaG9sZGVyIj4KICAgIAogICAgPGEgY2xhc3M9InNpZGViYXItdG9nZ2xlIiBhbnZpbC1kcm9wLXNsb3Q9InRvcC1sZWZ0LWJ0biIgaHJlZj0iamF2YXNjcmlwdDp2b2lkKDApIj48aSBjbGFzcz0iZmEgZmEtYmFycyI+PC9pPjwvYT4KICAgIAogICAgPGRpdiBjbGFzcz0ibGVmdC1uYXYiPgogICAgICA8ZGl2IGNsYXNzPSJsb2dvIiBhbnZpbC1zbG90PSJsb2dvIj4KICAgICAgICA8ZGl2IGNsYXNzPSJwbGFjZWhvbGRlciBsb2dvLXBsYWNlaG9sZGVyIGFudmlsLWRlc2lnbmVyLW9ubHkiIGFudmlsLWlmLXNsb3QtZW1wdHk9ImxvZ28iIGFudmlsLWRyb3AtaGVyZT5BZGQgeW91ciBsb2dvIGhlcmU8L2Rpdj4KICAgICAgPC9kaXY+CiAgICAgIDxkaXYgY2xhc3M9ImxlZnQtbmF2LWNvbnRhaW5lciBhbnZpbC1tZWFzdXJlLXRoaXMiIGFudmlsLXNsb3QtcmVwZWF0PSJsZWZ0LW5hdiIgYW52aWwtZHJvcC1jb250YWluZXI9Ij4uYW52aWwtY29udGFpbmVyIj48L2Rpdj4KICAgICAgPGRpdiBjbGFzcz0ibGVmdC1uYXYtcGxhY2Vob2xkZXIgYW52aWwtZGVzaWduZXItb25seSIgYW52aWwtaWYtc2xvdC1lbXB0eT0ibGVmdC1uYXYiIGFudmlsLWRyb3Atc2xvdD0ibGVmdC1uYXYiPgogICAgICAgIDxkaXYgY2xhc3M9InByb21wdCI+VG8gYWRkIGEgc2lkZWJhciwgZHJvcCBhIENvbHVtblBhbmVsIGhlcmUuPC9kaXY+CiAgICAgIDwvZGl2PgogICAgPC9kaXY+CgogICAgPGRpdiBjbGFzcz0iY29udGVudCI+CiAgICAgIDxkaXYgYW52aWwtc2xvdC1yZXBlYXQ9ImRlZmF1bHQiIGNsYXNzPSJhbnZpbC1tZWFzdXJlLXRoaXMiPjwvZGl2PgogICAgICA8ZGl2IGNsYXNzPSJwbGFjZWhvbGRlciBkcm9wLWhlcmUiIGFudmlsLWlmLXNsb3QtZW1wdHk9ImRlZmF1bHQiIGFudmlsLWRyb3Atc2xvdD0iZGVmYXVsdCI+RHJvcCBhIENvbHVtblBhbmVsIGhlcmUuPC9kaXY+CiAgICA8L2Rpdj4KICAgIAogICAgPGRpdiBjbGFzcz0ibmF2LXNoaWVsZCI+PC9kaXY+CiAgPC9kaXY+CjwvZGl2PgoKPGRpdiBhbnZpbC1kcm9wLWRlZmF1bHQgYW52aWwtZHJvcC1yZWRpcmVjdD0iLnBsYWNlaG9sZGVyIiBhbnZpbC1kcm9wLWNvbnRhaW5lcj0iLmFudmlsLWNvbnRhaW5lciI+PC9kaXY+Cgo8c2NyaXB0PgogIHZhciBsbiA9ICQoJy5zdHJ1Y3R1cmUgPiAubmF2LWhvbGRlciA+IC5sZWZ0LW5hdicpOwogIGZ1bmN0aW9uIGhpZGVTaWRlYmFyKCkgewogICAgbG4uYW5pbWF0ZSh7bGVmdDogLWxuLm91dGVyV2lkdGgoKX0sIGZ1bmN0aW9uKCkgewogICAgICBsbi5yZW1vdmVDbGFzcygiaW4tdHJhbnNpdGlvbiBzaG93biIpLmFkZENsYXNzKCJoaWRkZW4iKTsKICAgICAgJCgnLm5hdi1zaGllbGQnKS5yZW1vdmVDbGFzcygic2hvd24iKTsKICAgICAgJCh3aW5kb3cpLnRyaWdnZXIoJ3Jlc2l6ZScpOwogICAgfSk7CiAgfQogIGZ1bmN0aW9uIHNob3dTaWRlYmFyKCkgewogICAgJCgnLm5hdi1zaGllbGQnKS5hZGRDbGFzcygic2hvd24iKTsKICAgIGxuLmFkZENsYXNzKCJzaG93biIpLnJlbW92ZUNsYXNzKCJoaWRkZW4iKS5jc3Moe2xlZnQ6ICItMTAwJSJ9KS5jc3Moe2xlZnQ6IC1sbi5vdXRlcldpZHRoKCl9KS5hbmltYXRlKHtsZWZ0OiAwfSwgZnVuY3Rpb24oKSB7CiAgICAgIGxuLnJlbW92ZUNsYXNzKCJpbi10cmFuc2l0aW9uIik7CiAgICB9KTsKICAgICQod2luZG93KS50cmlnZ2VyKCdyZXNpemUnKTsKICB9CiAgJCgnLnNpZGViYXItdG9nZ2xlLCAubmF2LXNoaWVsZCcpLm9mZignY2xpY2snKS5vbignY2xpY2snLCBmdW5jdGlvbigpIHsKICAgIGlmIChsbi5pcygiOnZpc2libGUiKSB8fCAkKCcubmF2LXNoaWVsZCcpLmlzKCIuc2hvd24iKSkgewogICAgICBoaWRlU2lkZWJhcigpOwogICAgfSBlbHNlIGlmKCFsbi5pcygiOmVtcHR5IikpIHsKICAgICAgc2hvd1NpZGViYXIoKTsKICAgIH0KICB9KTsKICAkKCcubGVmdC1uYXYnKS5vZmYoJ2NsaWNrJykub24oJ2NsaWNrJywgJ2EsIGJ1dHRvbicsIGZ1bmN0aW9uKCkgewogICAgaWYgKCQoJy5uYXYtc2hpZWxkJykuaXMoIjp2aXNpYmxlIikpIHsKICAgICAgJCgnLm5hdi1zaGllbGQnKS50cmlnZ2VyKCdjbGljaycpOwogICAgfQogIH0pOwogIAogIGZ1bmN0aW9uIHBpbkxlZnROYXYoKSB7CiAgICBpZiAod2luZG93LmlubmVyV2lkdGggPiA5OTgpIHsKICAgICAgbG4uYWRkQ2xhc3MoJ3Nob3duJykucmVtb3ZlQ2xhc3MoJ2hpZGRlbicpLmNzcyh7bGVmdDogJzBweCd9KQogICAgICAkKCcubmF2LXNoaWVsZCcpLmFkZENsYXNzKCdzaG93bicpCiAgICB9CiAgfQogIAogICQod2luZG93KS5vbigncmVzaXplJywgcGluTGVmdE5hdikKCjwvc2NyaXB0Pg==, id: MD5G2GHFAVWRJ5VSBZKNN45Q6NRNQBBD, name: standard-page.html}
+  - {content: Ym9keSB7CiAgZm9udC1mYW1pbHk6ICdSb2JvdG8gQ29uZGVuc2VkJywgc2Fucy1zZXJpZjsKICBmb250LXNpemU6IDE0cHg7CiAgZm9udC13ZWlnaHQ6IDMwMDsKICBiYWNrZ3JvdW5kLWNvbG9yOiAlY29sb3I6QmFja2dyb3VuZCU7CiAgY29sb3I6ICVjb2xvcjpPbiBCYWNrZ3JvdW5kJTsKfQoKLnBsb3QtY29udGFpbmVyLnBsb3RseSAubWFpbi1zdmcgLnBhcmNvb3JkcyAueS1heGlzIC5heGlzIC50aWNrID4gdGV4dCB7CiAgdGV4dC1zaGFkb3c6IG5vbmUgIWltcG9ydGFudDsKfQoKLnBsb3QtY29udGFpbmVyLnBsb3RseSAubWFpbi1zdmcgLnBhcmNvb3JkcyAueS1heGlzIC5heGlzID4gcGF0aC5kb21haW4gewogIHN0cm9rZTogI0M4QzhDQjsKfQoKLyogVGV4dCBhbmQgbGlua3MgKi8KCi5hbnZpbC1yb2xlLWRpc3BsYXkgewogIGZvbnQtc2l6ZTogNTdweDsKICBsaW5lLWhlaWdodDogNjRweDsKICBmb250LXdlaWdodDogMzAwOwp9CgouYW52aWwtcm9sZS1oZWFkbGluZSB7CiAgZm9udC1mYW1pbHk6IEVjemFyLCBzZXJpZjsKICBmb250LXNpemU6IDMycHg7CiAgbGluZS1oZWlnaHQ6IDQwcHg7CiAgZm9udC13ZWlnaHQ6IDQwMDsKfQoKLmFudmlsLXJvbGUtdGl0bGUgewogIGZvbnQtc2l6ZTogMjJweDsKICBsaW5lLWhlaWdodDogMjhweDsKICBmb250LXdlaWdodDogNDAwOwp9CgouYW52aWwtcm9sZS1ib2R5IHsKICBmb250LXNpemU6IDE0cHg7CiAgbGluZS1oZWlnaHQ6IDIwcHg7CiAgZm9udC13ZWlnaHQ6IDMwMDsKfQoKLmFudmlsLXJvbGUtaW5wdXQtcHJvbXB0IHsKICBmb250LXNpemU6IDE2cHg7CiAgbGluZS1oZWlnaHQ6IDEuNTsKfQoKLmFudmlsLXJvbGUtYm9keSA+IC5sYWJlbC10ZXh0LCAuYW52aWwtcm9sZS1ib2R5IC5saW5rLXRleHQgewogIHBhZGRpbmctdG9wOiAwOwogIHBhZGRpbmctYm90dG9tOiAwOwp9CgphIHsKICBjb2xvcjogJWNvbG9yOlByaW1hcnklOwp9CgphOmhvdmVyOm5vdChkaXNhYmxlZCkgewogIGNvbG9yOiAlY29sb3I6UHJpbWFyeSBDb250YWluZXIlOwp9CgphOmFjdGl2ZTpub3QoZGlzYWJsZWQpLCBhOmZvY3VzOm5vdChkaXNhYmxlZCl7CiAgb3BhY2l0eTogJWNvbG9yOlByaW1hcnkgQ29udGFpbmVyJTsKfQoKCgovKiBUZXh0IGJveGVzIGFuZCBhcmVhcyAqLwoKLmFudmlsLXRleHQtYm94LCAuYW52aWwtdGV4dC1hcmVhLCAuZm9ybS1jb250cm9sIHsKICBjb2xvcjogJWNvbG9yOk9uIFN1cmZhY2UgVmFyaWFudCU7CiAgYmFja2dyb3VuZC1jb2xvcjogJWNvbG9yOlN1cmZhY2UgVmFyaWFudCU7CiAgYm9yZGVyOiBub25lOwogIGJvcmRlci1yYWRpdXM6IDA7CiAgYm94LXNoYWRvdzogaW5zZXQgMCAtMXB4IDAgJWNvbG9yOlNlY29uZGFyeSU7Cn0KCi5hbnZpbC10ZXh0LWJveDpmb2N1cywgLmFudmlsLXRleHQtYXJlYTpmb2N1cywgLmZvcm0tY29udHJvbDpmb2N1cyB7CiAgYm94LXNoYWRvdzogaW5zZXQgMCAtMi4ycHggMCAlY29sb3I6T24gU3VyZmFjZSBWYXJpYW50JTsKICBib3JkZXItcmFkaXVzOiAwOwp9CgouYW52aWwtdGV4dC1ib3hbZGlzYWJsZWRdLCAuYW52aWwtdGV4dC1hcmVhW2Rpc2FibGVkXSwgLmZvcm0tY29udHJvbFtkaXNhYmxlZF0gewogIGJhY2tncm91bmQ6ICVjb2xvcjpEaXNhYmxlZCBDb250YWluZXIlOwp9CgovKiBCdXR0b25zICovCgouYnRuLCAuYnRuLWRlZmF1bHQsIC5maWxlLWxvYWRlciwgLmZpbGUtbG9hZGVyID4gbGFiZWwgeyAKICBmb250LXNpemU6IDE0cHg7CiAgdGV4dC10cmFuc2Zvcm06IHVwcGVyY2FzZTsKICBmb250LXdlaWdodDogYm9sZDsKICBsZXR0ZXItc3BhY2luZzogMnB4OwogIAogIGJvcmRlcjogMDsKICBiYWNrZ3JvdW5kLWNvbG9yOiB0cmFuc3BhcmVudDsKICBiYWNrZ3JvdW5kLWltYWdlOiBub25lOwogIGNvbG9yOiAlY29sb3I6T24gQmFja2dyb3VuZCU7CiAgdGV4dC1zaGFkb3c6IG5vbmU7CiAgYm94LXNoYWRvdzogbm9uZTsKICAtd2Via2l0LWJveC1zaGFkb3c6IG5vbmU7CiAgCiAgcG9zaXRpb246IHJlbGF0aXZlOwp9CgouYnRuOmhvdmVyLCAuYnRuLWRlZmF1bHQ6aG92ZXIgewogIGNvbG9yOiAlY29sb3I6T24gQmFja2dyb3VuZCU7CiAgYmFja2dyb3VuZC1jb2xvcjogJWNvbG9yOkxpZ2h0IE92ZXJsYXkgMSU7CiAgb3V0bGluZTogbm9uZTsKICBiYWNrZ3JvdW5kLWltYWdlOiBub25lOwp9CgouYnRuOmZvY3VzLCAuYnRuOmFjdGl2ZTpmb2N1cywgLmJ0bi5hY3RpdmU6Zm9jdXMsIC5idG4uZm9jdXMsIC5idG46YWN0aXZlLmZvY3VzLCAuYnRuLmFjdGl2ZS5mb2N1cyB7CiAgY29sb3I6ICVjb2xvcjpPbiBCYWNrZ3JvdW5kJTsKICBiYWNrZ3JvdW5kLWNvbG9yOiAlY29sb3I6TGlnaHQgT3ZlcmxheSAyJTsKICBvdXRsaW5lOiBub25lOwogIG91dGxpbmUtb2Zmc2V0OiAwcHg7Cn0KCi5idG5bZGlzYWJsZWRdLCAuYnRuW2Rpc2FibGVkXTpob3ZlciwgLmJ0bltkaXNhYmxlZF06Zm9jdXMsIC5maWxlLWxvYWRlci5hbnZpbC1kaXNhYmxlZCA+IGxhYmVsLCAuZmlsZS1sb2FkZXIuYW52aWwtZGlzYWJsZWQgPiBsYWJlbDpob3ZlciB7IAogIGNvbG9yOiAlY29sb3I6T24gRGlzYWJsZWQlOwogIGJhY2tncm91bmQtY29sb3I6IHRyYW5zcGFyZW50OyAhaW1wb3J0YW50Cn0KCi8qIElucHV0cyAqLwoKaW5wdXRbdHlwZT0iZmlsZSJdOmZvY3VzLCBpbnB1dFt0eXBlPSJyYWRpbyJdOmZvY3VzLCBpbnB1dFt0eXBlPSJjaGVja2JveCJdOmZvY3VzIHsKICBvdXRsaW5lOiAwOwp9CgouZmlsZS1sb2FkZXI6aG92ZXIgewogIGNvbG9yOiAlY29sb3I6T24gQmFja2dyb3VuZCU7Cn0KCi5maWxlLWxvYWRlciA+IGxhYmVsOmhvdmVyIHsKICBiYWNrZ3JvdW5kOiAlY29sb3I6TGlnaHQgT3ZlcmxheSAxJTsKfQoKLmNoZWNrYm94IGlucHV0LCAucmFkaW8gaW5wdXQgewogIC13ZWJraXQtYXBwZWFyYW5jZTogbm9uZTsKICBhcHBlYXJhbmNlOiBub25lOwogIHdpZHRoOiAxNXB4OwogIGhlaWdodDogMTVweDsKICBib3JkZXItcmFkaXVzOiAxcHg7CiAgYmFja2dyb3VuZDogJWNvbG9yOlN1cmZhY2UgVmFyaWFudCU7Cn0KCi5yYWRpbyBpbnB1dCB7CiAgYm9yZGVyLXJhZGl1cyA6IDUwJTsKfQoKLmNoZWNrYm94IGlucHV0OmhvdmVyLCAucmFkaW8gaW5wdXQ6aG92ZXIgewogIGJhY2tncm91bmQ6IGxpbmVhci1ncmFkaWVudCgwZGVnLCAlY29sb3I6TGlnaHQgT3ZlcmxheSAxJSwgJWNvbG9yOkxpZ2h0IE92ZXJsYXkgMSUpLCAlY29sb3I6U3VyZmFjZSBWYXJpYW50JTsgCn0KCi5jaGVja2JveCBpbnB1dFtkaXNhYmxlZF0sIHJhZGlvIGlucHV0W2Rpc2FibGVkXSB7CiAgYmFja2dyb3VuZDogJWNvbG9yOk9uIERpc2FibGVkJTsKfQoKLmNoZWNrYm94IGlucHV0W2Rpc2FibGVkXTpob3ZlciwgLnJhZGlvIGlucHV0W2Rpc2FibGVkXTpob3ZlciB7CiAgYmFja2dyb3VuZDogJWNvbG9yOk9uIERpc2FibGVkJTsKfQoKaW5wdXRbZGlzYWJsZWRdIH4gc3BhbiB7CiAgY29sb3I6ICVjb2xvcjpPbiBEaXNhYmxlZCU7CiAgY3Vyc29yOiBub3QtYWxsb3dlZDsKfQoKLmNoZWNrYm94IGlucHV0OmNoZWNrZWQsIC5yYWRpbyBpbnB1dDpjaGVja2VkIHsKICBiYWNrZ3JvdW5kLWNvbG9yOiAlY29sb3I6UHJpbWFyeSBDb250YWluZXIlOwp9CgouY2hlY2tib3ggaW5wdXQ6Y2hlY2tlZDpiZWZvcmUgewogIGZvbnQtZmFtaWx5OiAiRm9udEF3ZXNvbWUiOwogIGNvbnRlbnQ6ICJcZjAwYyI7CiAgZm9udC1zaXplOiAxMHB4OwogIGRpc3BsYXk6IGZsZXg7CiAgbWFyZ2luOiAyLjZweDsKfQoKLnJhZGlvIGlucHV0OmNoZWNrZWQ6YmVmb3JlIHsKICBmb250LWZhbWlseTogIkZvbnRBd2Vzb21lIjsKICBjb250ZW50OiAiXGYxMTEiOwogIGZvbnQtc2l6ZTogOHB4OwogIGRpc3BsYXk6IGZsZXg7CiAgbWFyZ2luLXRvcDogMy42cHg7CiAgbWFyZ2luLWxlZnQ6IDQuMXB4Cn0KCi8qIENvbHVtbiBQYW5lbCAqLwoKLmFudmlsLXBhbmVsLWNvbCB7CiAgcGFkZGluZy1ib3R0b206IDEwcHg7CiAgbWFyZ2luLWJvdHRvbTogLTEwcHg7Cn0KCi8qIERhdGUgUGlja2VyICovCgouZGF0ZXJhbmdlcGlja2VyIHsKICBjb2xvcjogJWNvbG9yOk9uIEJhY2tncm91bmQlOwogIGJhY2tncm91bmQtY29sb3I6ICVjb2xvcjpTdXJmYWNlIFZhcmlhbnQlOwp9CgouZGF0ZXJhbmdlcGlja2VyOjpiZWZvcmUsIC5kYXRlcmFuZ2VwaWNrZXI6OmFmdGVyIHsKICBib3JkZXItYm90dG9tOiAwOwp9CgouZGF0ZXJhbmdlcGlja2VyIC5jYWxlbmRhci10YWJsZSB7CiAgYmFja2dyb3VuZC1jb2xvcjogdHJhbnNwYXJlbnQ7Cn0KCi5kYXRlcmFuZ2VwaWNrZXIgLmNhbGVuZGFyLXRhYmxlIHRkLm9mZiB7CiAgYmFja2dyb3VuZC1jb2xvcjogdHJhbnNwYXJlbnQ7IAogIGNvbG9yOiAlY29sb3I6RGlzYWJsZWQlICFpbXBvcnRhbnQ7Cn0KCi5kYXRlcmFuZ2VwaWNrZXIgLmNhbGVuZGFyLXRhYmxlIHRkLmF2YWlsYWJsZTpob3ZlciB7CiAgYmFja2dyb3VuZDogbGluZWFyLWdyYWRpZW50KDBkZWcsICVjb2xvcjpMaWdodCBPdmVybGF5IDIlLCAlY29sb3I6TGlnaHQgT3ZlcmxheSAyJSksICVjb2xvcjpTdXJmYWNlJTsKICBib3JkZXItcmFkaXVzOiA1MCU7Cn0KCi5kYXRlcmFuZ2VwaWNrZXIgdGQuYWN0aXZlLCAuZGF0ZXJhbmdlcGlja2VyIHRkLnN0YXJ0LWRhdGUuZW5kLWRhdGUuYXZhaWxhYmxlIHsKICBjb2xvcjogJWNvbG9yOlN1cmZhY2UgVmFyaWFudCU7CiAgYmFja2dyb3VuZC1jb2xvcjogJWNvbG9yOlByaW1hcnklOwogIGJvcmRlci1yYWRpdXM6IDUwJTsKfQoKLmRhdGVyYW5nZXBpY2tlciB0ZC5hY3RpdmU6aG92ZXIsIC5kYXRlcmFuZ2VwaWNrZXIgdGQuc3RhcnQtZGF0ZS5lbmQtZGF0ZTpob3ZlciB7CiAgYmFja2dyb3VuZDogbGluZWFyLWdyYWRpZW50KDBkZWcsICVjb2xvcjpEYXJrIE92ZXJsYXkgMiUsICVjb2xvcjpEYXJrIE92ZXJsYXkgMiUpLCAlY29sb3I6UHJpbWFyeSU7Cn0KCi5kYXRlcmFuZ2VwaWNrZXIgc2VsZWN0IHsKICBjb2xvcjogJWNvbG9yOk9uIEJhY2tncm91bmQlOwogIGJhY2tncm91bmQ6IGxpbmVhci1ncmFkaWVudCgwZGVnLCAlY29sb3I6TGlnaHQgT3ZlcmxheSAxJSwgJWNvbG9yOkxpZ2h0IE92ZXJsYXkgMSUpLCAlY29sb3I6U3VyZmFjZSU7OwogIGJvcmRlcjogMDsKfQoKLmRhdGVyYW5nZXBpY2tlciBzZWxlY3Q6Zm9jdXMgewogIGJhY2tncm91bmQ6IGxpbmVhci1ncmFkaWVudCgwZGVnLCAlY29sb3I6TGlnaHQgT3ZlcmxheSAxJSwgJWNvbG9yOkxpZ2h0IE92ZXJsYXkgMSUpLCAlY29sb3I6U3VyZmFjZSU7CiAgYm9yZGVyLWJvdHRvbTogMS41cHggc29saWQgJWNvbG9yOk9uIFN1cmZhY2UgVmFyaWFudCU7Cn0KCi8qIERhdGEgZ3JpZHMgKi8KCi5hbnZpbC1kYXRhLWdyaWQgewogIGJhY2tncm91bmQ6ICVjb2xvcjpTdXJmYWNlIFZhcmlhbnQlOwp9CgouYW52aWwtZGF0YS1ncmlkPi5kYXRhLWdyaWQtY2hpbGQtcGFuZWw+ZGl2LmF1dG8tZ3JpZC1oZWFkZXIgewogIGJvcmRlci1ib3R0b206IDJweCBzb2xpZCAlY29sb3I6T3V0bGluZSU7Cn0KCi5hbnZpbC1kYXRhLXJvdy1wYW5lbD4uZGF0YS1yb3ctY29sIHsKICBwYWRkaW5nLWxlZnQ6IDIwcHg7CiAgYm9yZGVyLWJvdHRvbTogMXB4IHNvbGlkICVjb2xvcjpPdXRsaW5lJTsKfQoKLmFudmlsLWRhdGEtcm93LXBhbmVsPi5kYXRhLXJvdy1jb2w6bm90KDpsYXN0LWNoaWxkKSB7CiAgYm9yZGVyLXJpZ2h0OiAxcHggc29saWQgJWNvbG9yOlByaW1hcnkgT3ZlcmxheSAyJTsKfQoKLyogTW9kYWxzICovCgoubW9kYWwtY29udGVudCB7CiAgYmFja2dyb3VuZDogbGluZWFyLWdyYWRpZW50KDBkZWcsICVjb2xvcjpQcmltYXJ5IE92ZXJsYXkgMSUsICVjb2xvcjpQcmltYXJ5IE92ZXJsYXkgMSUpLCAlY29sb3I6U3VyZmFjZSU7CiAgYm9yZGVyLXJhZGl1czogMnB4Owp9CgoubW9kYWwtZm9vdGVyIHsKICBib3JkZXI6IDA7Cn0KCi5tb2RhbC1oZWFkZXIgewogIHBhZGRpbmc6IDI0cHggMjRweCAwcHg7CiAgZm9udC1zaXplOiAyNHB4OwogIGxpbmUtaGVpZ2h0OiAzMnB4OwogIGJvcmRlcjogMDsKICBjb2xvcjogJWNvbG9yOk9uIFN1cmZhY2UlOwp9CgoubW9kYWwtYm9keSB7CiAgcGFkZGluZzogMTBweCAzMHB4Owp9CgouYWxlcnQtaW5mbyB7CiAgYmFja2dyb3VuZDogbGluZWFyLWdyYWRpZW50KDBkZWcsICVjb2xvcjpQcmltYXJ5IE92ZXJsYXkgMiUsICVjb2xvcjpQcmltYXJ5IE92ZXJsYXkgMiUpLCAlY29sb3I6U3VyZmFjZSU7CiAgY29sb3I6ICVjb2xvcjpPbiBTdXJmYWNlJTsKICBib3JkZXI6IG5vbmU7CiAgLyogMTZkcCAqLyBib3gtc2hhZG93OiAwIDE2cHggMjRweCAycHggcmdiYSgwLCAwLCAwLCAwLjE0KSwgMCA2cHggMzBweCA1cHggcmdiYSgwLCAwLCAwLCAwLjEyKSwgMCA4cHggMTBweCAtNXB4IHJnYmEoMCwgMCwgMCwgMC4yKTsKfQoKLmFsZXJ0LWluZm8gYnV0dG9uLmNsb3NlLCAubW9kYWwtaGVhZGVyIGJ1dHRvbi5jbG9zZSB7CiAgY29sb3I6ICVjb2xvcjpPbiBTdXJmYWNlJTsKICB0ZXh0LXNoYWRvdzogbm9uZTsKfQoKLyogUm9sZXMgKi8KCi5hbnZpbC1yb2xlLWNhcmQgewogIGJhY2tncm91bmQ6ICVjb2xvcjpTdXJmYWNlIFZhcmlhbnQlOwogIHBhZGRpbmc6IDhweCAxMnB4Owp9CgouYW52aWwtcm9sZS1oZWFkaW5nIHsKICBmb250LXNpemU6IDQwcHg7CiAgZm9udC1mYW1pbHk6ICJFY3phciIsIHNlcmlmOwp9CgouYW52aWwtcm9sZS1maWxsZWQgLmJ0biwgLmFudmlsLXJvbGUtZmlsbGVkID4gbGFiZWwgewogIGJhY2tncm91bmQtY29sb3I6ICVjb2xvcjpQcmltYXJ5JTsKICBwYWRkaW5nOiA4cHggMTZweDsKICBib3JkZXItcmFkaXVzOiAxMHB4OwogIGNvbG9yOiAlY29sb3I6T24gUHJpbWFyeSU7Cn0KCi5hbnZpbC1yb2xlLWZpbGxlZCAuYnRuOmhvdmVyLCAuYW52aWwtcm9sZS1maWxsZWQgPiBsYWJlbDpob3ZlciB7CiAgYmFja2dyb3VuZDogbGluZWFyLWdyYWRpZW50KDBkZWcsICVjb2xvcjpMaWdodCBPdmVybGF5IDElLCAlY29sb3I6TGlnaHQgT3ZlcmxheSAxJSksICVjb2xvcjpQcmltYXJ5JTsKfQoKLmFudmlsLXJvbGUtZmlsbGVkIC5idG46YWN0aXZlLCAuYW52aWwtcm9sZS1maWxsZWQgLmJ0bjphY3RpdmU6Zm9jdXMsIC5hbnZpbC1yb2xlLWZpbGxlZCA+IGxhYmVsOmFjdGl2ZSwgLmFudmlsLXJvbGUtZmlsbGVkID4gbGFiZWw6YWN0aXZlOmZvY3VzewogIGNvbG9yOiAlY29sb3I6T24gUHJpbWFyeSU7CiAgYmFja2dyb3VuZDogbGluZWFyLWdyYWRpZW50KDBkZWcsICVjb2xvcjpMaWdodCBPdmVybGF5IDIlLCAlY29sb3I6TGlnaHQgT3ZlcmxheSAyJSksICVjb2xvcjpQcmltYXJ5JTsKfQoKLmFudmlsLXJvbGUtZmlsbGVkIC5idG5bZGlzYWJsZWRdLCAuYW52aWwtcm9sZS1maWxsZWQgLmJ0bltkaXNhYmxlZF06aG92ZXIsIC5hbnZpbC1yb2xlLWZpbGxlZC5hbnZpbC1kaXNhYmxlZCA+IGxhYmVsIHsKICBjb2xvcjogJWNvbG9yOk9uIERpc2FibGVkJTsKICBiYWNrZ3JvdW5kOiAlY29sb3I6RGlzYWJsZWQgQ29udGFpbmVyJTsKfQoKLmFudmlsLXJvbGUtb3V0bGluZWQgLmJ0biwgLmFudmlsLXJvbGUtb3V0bGluZWQgPiBsYWJlbCB7CiAgb3V0bGluZTogMnB4IHNvbGlkICVjb2xvcjpQcmltYXJ5JTsKICBib3JkZXItcmFkaXVzOiAxMHB4Owp9CgouYW52aWwtcm9sZS1vdXRsaW5lZCAuYnRuOmFjdGl2ZSwgLmFudmlsLXJvbGUtb3V0bGluZWQgLmJ0bjphY3RpdmU6Zm9jdXMsIC5hbnZpbC1yb2xlLW91dGxpbmVkID4gbGFiZWw6YWN0aXZlLCAuYW52aWwtcm9sZS1vdXRsaW5lZCA+IGxhYmVsOmFjdGl2ZTpmb2N1cyB7CiAgb3V0bGluZTogMnB4IHNvbGlkICVjb2xvcjpQcmltYXJ5JTsKICBib3JkZXItcmFkaXVzOiAxMHB4OwogIG91dGxpbmUtb2Zmc2V0OiAwcHg7Cn0KCi5hbnZpbC1yb2xlLW91dGxpbmVkIC5idG5bZGlzYWJsZWRdLCAuYW52aWwtcm9sZS1vdXRsaW5lZCAuYnRuW2Rpc2FibGVkXTpob3ZlciwgLmFudmlsLXJvbGUtb3V0bGluZWQuYW52aWwtZGlzYWJsZWQgPiBsYWJlbCB7CiAgb3V0bGluZTogMnB4IHNvbGlkICVjb2xvcjpPbiBEaXNhYmxlZCU7Cn0KCi5hbnZpbC1yb2xlLWlucHV0LWVycm9yLCAuYW52aWwtcm9sZS1pbnB1dC1lcnJvcjpmb2N1cywgLmFudmlsLWRhdGVwaWNrZXIuYW52aWwtcm9sZS1pbnB1dC1lcnJvciBpbnB1dCB7CiAgY29sb3I6ICVjb2xvcjpFcnJvciU7CiAgYm94LXNoYWRvdzogaW5zZXQgMCAtMi4ycHggMCAlY29sb3I6RXJyb3IlOwogIGJvcmRlci1yYWRpdXM6IDA7Cn0KCi5hbnZpbC1yb2xlLXRhZyB7CiAgY29sb3I6ICVjb2xvcjpCJTsKICBib3JkZXItcmFkaXVzOiA1cHg7CiAgcGFkZGluZzogMHB4IDVweDsKICBtYXJnaW4tcmlnaHQ6IDVweDsKfQoKLyogT3RoZXIgY2xhc3NlcyAqLwoKLmNvbnRlbnQgPiAucGxhY2Vob2xkZXIgewogIG1hcmdpbjogMTZweDsKICBjb2xvcjogIzg4ODsKICBmb250LXNpemU6IDE4cHg7CiAgb3V0bGluZTogMXB4IGRvdHRlZDsKICBwYWRkaW5nOiAxNnB4OwogIHRleHQtYWxpZ246IGNlbnRlcjsKfQoKLmxvZ28tcGxhY2Vob2xkZXIgewogIHBhZGRpbmc6IDVweDsKICBtYXJnaW46IDhweCAwcHg7CiAgd2lkdGg6IDU1cHg7CiAgdGV4dC1hbGlnbjogY2VudGVyOwogIGNvbG9yOiAjODg4OwogIG91dGxpbmU6IDFweCBkb3R0ZWQgIzg4ODsKfQoKLyogU2Nyb2xsYmFycyAqLwoKLmNvbnRlbnQ6Oi13ZWJraXQtc2Nyb2xsYmFyIHsKICB3aWR0aDogMTBweDsKfQoKLmNvbnRlbnQ6Oi13ZWJraXQtc2Nyb2xsYmFyLXRodW1iIHsKICB3aWR0aDogNnB4OwogIGJhY2tncm91bmQ6IGxpbmVhci1ncmFkaWVudCgwZGVnLCAlY29sb3I6TGlnaHQgT3ZlcmxheSAyJSwgJWNvbG9yOkxpZ2h0IE92ZXJsYXkgMiUpLCAlY29sb3I6U3VyZmFjZSU7CiAgYm9yZGVyLXJhZGl1czogNnB4OwogIC13ZWJraXQtYm94LXNoYWRvdzogaW5zZXQgMCAwIDJweCByZ2JhKDAsMCwwLC4yKTsKfQoKLmNvbnRlbnQ6Oi13ZWJraXQtc2Nyb2xsYmFyLXRyYWNrIHsKICBiYWNrZ3JvdW5kOiBsaW5lYXItZ3JhZGllbnQoMGRlZywgJWNvbG9yOkxpZ2h0IE92ZXJsYXkgMSUsICVjb2xvcjpMaWdodCBPdmVybGF5IDElKSwgJWNvbG9yOlN1cmZhY2UlOwp9CgoubGVmdC1uYXY6Oi13ZWJraXQtc2Nyb2xsYmFyIHsKICB3aWR0aDogMTBweDsKfQoKLmxlZnQtbmF2Ojotd2Via2l0LXNjcm9sbGJhci10aHVtYiB7CiAgd2lkdGg6IDZweDsKICBiYWNrZ3JvdW5kOiBsaW5lYXItZ3JhZGllbnQoMGRlZywgJWNvbG9yOkxpZ2h0IE92ZXJsYXkgMiUsICVjb2xvcjpMaWdodCBPdmVybGF5IDIlKSwgJWNvbG9yOlN1cmZhY2UlOwogIGJvcmRlci1yYWRpdXM6IDZweDsKICAtd2Via2l0LWJveC1zaGFkb3c6IGluc2V0IDAgMCAycHggcmdiYSgwLDAsMCwuMik7Cn0KCi5sZWZ0LW5hdjo6LXdlYmtpdC1zY3JvbGxiYXItdHJhY2sgewogIGJhY2tncm91bmQ6IGxpbmVhci1ncmFkaWVudCgwZGVnLCAlY29sb3I6TGlnaHQgT3ZlcmxheSAxJSwgJWNvbG9yOkxpZ2h0IE92ZXJsYXkgMSUpLCAlY29sb3I6U3VyZmFjZSU7Cn0KCi8qIFNwaW5uZXIgKi8KCiNsb2FkaW5nU3Bpbm5lciB7CiAgICBwb3NpdGlvbjogZml4ZWQ7CiAgICB0b3A6IGNhbGMoMzMlIC0gNzBweC8yKTsKICAgIGxlZnQ6IGNhbGMoNTAlIC0gNzBweC8yKTsKICAgIHdpZHRoOiA3MHB4OwogICAgaGVpZ2h0OiA3MHB4OwogICAgYmFja2dyb3VuZC1jb2xvcjogJWNvbG9yOkxpZ2h0IE92ZXJsYXkgMiU7CiAgICBiYWNrZ3JvdW5kLXJlcGVhdDogbm8tcmVwZWF0OwogICAgYmFja2dyb3VuZC1wb3NpdGlvbjogY2VudGVyOwogICAgYm9yZGVyLXJhZGl1czogMzVweDsKICAgIGJveC1zaGFkb3c6IDBweCAwcHggMTAwcHggMTAwcHggJWNvbG9yOkxpZ2h0IE92ZXJsYXkgMiU7CiAgICBwb2ludGVyLWV2ZW50czogbm9uZTsKICAgIHotaW5kZXg6IDk5OTk7Cn0KCi8qIFB1dCB0aGluZ3Mgb24gYSA0cHggZ3JpZCAqLwouY29sLXBhZGRpbmcuY29sLXBhZGRpbmctdGlueSB7IHBhZGRpbmc6IDAgMnB4OyB9Ci5jb2x1bW4tcGFuZWwuY29sLXBhZGRpbmctdGlueSA+IC5hbnZpbC1wYW5lbC1zZWN0aW9uID4gLmFudmlsLXBhbmVsLXNlY3Rpb24tY29udGFpbmVyID4gLmFudmlsLXBhbmVsLXNlY3Rpb24tZ3V0dGVyIHsgbWFyZ2luOiAwIC0ycHg7IH0KCi5jb2wtcGFkZGluZy5jb2wtcGFkZGluZy1zbWFsbCB7IHBhZGRpbmc6IDAgNHB4OyB9Ci5jb2x1bW4tcGFuZWwuY29sLXBhZGRpbmctc21hbGwgPiAuYW52aWwtcGFuZWwtc2VjdGlvbiA+IC5hbnZpbC1wYW5lbC1zZWN0aW9uLWNvbnRhaW5lciA+IC5hbnZpbC1wYW5lbC1zZWN0aW9uLWd1dHRlciB7IG1hcmdpbjogMCAtNHB4OyB9CgouY29sLXBhZGRpbmcuY29sLXBhZGRpbmctbWVkaXVtIHsgcGFkZGluZzogMCA4cHg7IH0KLmNvbHVtbi1wYW5lbC5jb2wtcGFkZGluZy1tZWRpdW0gPiAuYW52aWwtcGFuZWwtc2VjdGlvbiA+IC5hbnZpbC1wYW5lbC1zZWN0aW9uLWNvbnRhaW5lciA+IC5hbnZpbC1wYW5lbC1zZWN0aW9uLWd1dHRlciB7IG1hcmdpbjogMCAtOHB4OyB9CgouY29sLXBhZGRpbmcuY29sLXBhZGRpbmctbGFyZ2UgeyBwYWRkaW5nOiAwIDEycHg7IH0KLmNvbHVtbi1wYW5lbC5jb2wtcGFkZGluZy1sYXJnZSA+IC5hbnZpbC1wYW5lbC1zZWN0aW9uID4gLmFudmlsLXBhbmVsLXNlY3Rpb24tY29udGFpbmVyID4gLmFudmlsLXBhbmVsLXNlY3Rpb24tZ3V0dGVyIHsgbWFyZ2luOiAwIC0xMnB4OyB9CgouY29sLXBhZGRpbmcuY29sLXBhZGRpbmctaHVnZSB7IHBhZGRpbmc6IDAgMjBweDsgfQouY29sdW1uLXBhbmVsLmNvbC1wYWRkaW5nLWh1Z2UgPiAuYW52aWwtcGFuZWwtc2VjdGlvbiA+IC5hbnZpbC1wYW5lbC1zZWN0aW9uLWNvbnRhaW5lciA+IC5hbnZpbC1wYW5lbC1zZWN0aW9uLWd1dHRlciB7IG1hcmdpbjogMCAtMjBweDsgfQoKLmZsb3ctcGFuZWwuZmxvdy1zcGFjaW5nLXRpbnkgPiAuZmxvdy1wYW5lbC1ndXR0ZXIgeyBtYXJnaW46IDAgLTJweDsgfQouZmxvdy1wYW5lbC5mbG93LXNwYWNpbmctdGlueSA+IC5mbG93LXBhbmVsLWd1dHRlciA+IC5mbG93LXBhbmVsLWl0ZW0geyAKICBtYXJnaW4tbGVmdDogMnB4OwogIG1hcmdpbi1yaWdodDogMnB4Owp9CgouZmxvdy1wYW5lbC5mbG93LXNwYWNpbmctc21hbGwgPiAuZmxvdy1wYW5lbC1ndXR0ZXIgeyBtYXJnaW46IDAgLTRweDsgfQouZmxvdy1wYW5lbC5mbG93LXNwYWNpbmctc21hbGwgPiAuZmxvdy1wYW5lbC1ndXR0ZXIgPiAuZmxvdy1wYW5lbC1pdGVtIHsgCiAgbWFyZ2luLWxlZnQ6IDRweDsKICBtYXJnaW4tcmlnaHQ6IDRweDsKfQoKLmZsb3ctcGFuZWwuZmxvdy1zcGFjaW5nLW1lZGl1bSA+IC5mbG93LXBhbmVsLWd1dHRlciB7IG1hcmdpbjogMCAtOHB4OyB9Ci5mbG93LXBhbmVsLmZsb3ctc3BhY2luZy1tZWRpdW0gPiAuZmxvdy1wYW5lbC1ndXR0ZXIgPiAuZmxvdy1wYW5lbC1pdGVtIHsgCiAgbWFyZ2luLWxlZnQ6IDhweDsKICBtYXJnaW4tcmlnaHQ6IDhweDsKfQoKLmZsb3ctcGFuZWwuZmxvdy1zcGFjaW5nLWxhcmdlID4gLmZsb3ctcGFuZWwtZ3V0dGVyIHsgbWFyZ2luOiAwIC0xMnB4OyB9Ci5mbG93LXBhbmVsLmZsb3ctc3BhY2luZy1sYXJnZSA+IC5mbG93LXBhbmVsLWd1dHRlciA+IC5mbG93LXBhbmVsLWl0ZW0geyAKICBtYXJnaW4tbGVmdDogMTJweDsKICBtYXJnaW4tcmlnaHQ6IDEycHg7Cn0KCi5mbG93LXBhbmVsLmZsb3ctc3BhY2luZy1odWdlID4gLmZsb3ctcGFuZWwtZ3V0dGVyIHsgbWFyZ2luOiAwIC0yMHB4OyB9Ci5mbG93LXBhbmVsLmZsb3ctc3BhY2luZy1odWdlID4gLmZsb3ctcGFuZWwtZ3V0dGVyID4gLmZsb3ctcGFuZWwtaXRlbXsgCiAgbWFyZ2luLWxlZnQ6IDIwcHg7CiAgbWFyZ2luLXJpZ2h0OiAyMHB4Owp9CgovKiBQYWdlIHN0cnVjdHVyZSAqLwouc3RydWN0dXJlIHsKICBkaXNwbGF5OiBmbGV4OwogIGZsZXgtZGlyZWN0aW9uOiBjb2x1bW47CiAgbWluLWhlaWdodDogMTAwdmg7CiAgbWluLWhlaWdodDogY2FsYygxMDB2aCAtICVhbnZpbC1iYW5uZXItaGVpZ2h0JSk7CiAgaGVpZ2h0OiAwOyAvKiBUbyBtYWtlIGZsZXgtZ3JvdyB3b3JrIGluIElFICovCn0KCi8qIFRoaXMgYnJlYWtzIHRoZSBkZXNpZ25lcidzIGhlaWdodCBtZWFzdXJlbWVudC4gSUUgaXNuJ3Qgc3VwcG9ydGVkIGZvciB0aGUgZGVzaWduZXIsIHNvIHNldCBpdCBiYWNrLiAqLwouZGVzaWduZXIgLnN0cnVjdHVyZSB7CiAgaGVpZ2h0OiBpbml0aWFsOwp9CgoubmF2LWhvbGRlciB7CiAgZmxleC1ncm93OiAxOwogIG92ZXJmbG93LXk6IGF1dG87Cn0KCkBtZWRpYSBwcmludCB7CiAgLm5hdi1ob2xkZXIgewogICAgb3ZlcmZsb3cteTogaW5pdGlhbDsKICB9Cn0KCi8qIE1vYmlsZSBhbmQgZGVza3RvcCBtYXJnaW5zIGZvciBjb250ZW50ICovCi5jb250ZW50ID4gKiA+IC5hbnZpbC1jb250YWluZXIgewogIHBhZGRpbmc6IDhweDsKfQoKQG1lZGlhKG1pbi13aWR0aDo5OTFweCkgewogIC5jb250ZW50ID4gKiA+IC5hbnZpbC1jb250YWluZXIgewogICAgcGFkZGluZzogMTZweCAyNHB4OwogIH0KfQoKLmNvbnRlbnQgLmFudmlsLW1lYXN1cmUtdGhpcyB7CiAgcGFkZGluZy1ib3R0b206IDFweDsgLyogUHJldmVudCBtYXJnaW4gY29sbGFwc2UgbWVzc2luZyB1cCBlbWJlZGRpbmcgKi8KfQoKLyogQWxsb3cgb3ZlcmZsb3dzIHRvIHNob3cgZHJvcCBzaGFkb3dzIGluIENvbHVtblBhbmVscwogICBUaGlzIGNhbiBjcmVhdGUgdW53YW50ZWQgc2Nyb2xsYmFyczsgd2UgY29tcGVuc2F0ZSBmb3IgdGhpcyBhdCB0aGUgdG9wIGxldmVsIHdpdGggLm5hdi1ob2xkZXIgLmNvbnRlbnQge292ZXJmbG93LXg6IGhpZGRlbjt9CiovCi5hbnZpbC1jb250YWluZXItb3ZlcmZsb3cgewogIG92ZXJmbG93LXg6IHZpc2libGU7CiAgb3ZlcmZsb3cteTogdmlzaWJsZTsKfQoKLm5hdi1ob2xkZXIgewogIGRpc3BsYXk6IGZsZXg7CiAgYWxpZ24taXRlbXM6IHN0cmV0Y2g7CiAgZmxleC1kaXJlY3Rpb246IHJvdzsKfQoKLm5hdi1ob2xkZXIgLmxlZnQtbmF2IHsKICBwb3NpdGlvbjogcmVsYXRpdmU7CiAgcGFkZGluZzogMTBweDsKICBmbGV4LXNocmluazogMDsKICBtaW4td2lkdGg6IDE2MHB4OwogIG1heC13aWR0aDogNDAwcHg7Cn0KCi5sb2dvIHsKICBtYXJnaW4tYm90dG9tOiAyMHB4OwogIG1pbi13aWR0aDogNDBweDsKfQoKLm5hdi1zaGllbGQgewogIGRpc3BsYXk6IG5vbmU7Cn0KCi5zaWRlYmFyLXRvZ2dsZSB7CiAgZGlzcGxheTogbm9uZTsKfQoKLmxlZnQtbmF2LWNvbnRhaW5lciB7CiAgbWFyZ2luOiAxMHB4Owp9Ci8qIE1vYmlsZSAqLwoKQG1lZGlhKG1heC13aWR0aDo5OThweCkgewogIAogIGh0bWw6bm90KC5kZXNpZ25lcikgLnNpZGViYXItdG9nZ2xlIHsKICAgIGRpc3BsYXk6IGJsb2NrOwogICAgcGFkZGluZzogOHB4IDBweCAxMHB4IDBweDsKICAgIHRleHQtYWxpZ246IGNlbnRlcjsKICAgIG1hcmdpbjogMTBweDsKICAgIHdpZHRoOiAzNXB4OwogICAgaGVpZ2h0OiAzNXB4OwogICAgY29sb3I6ICVjb2xvcjpPbiBCYWNrZ3JvdW5kJTsKICAgIGJhY2tncm91bmQ6ICVjb2xvcjpQcmltYXJ5JTsKICAgIGJvcmRlci1yYWRpdXM6IDUwJTsKICB9CiAgCiAgICBodG1sOm5vdCguZGVzaWduZXIpIC5zaWRlYmFyLXRvZ2dsZTpmb2N1cyB7CiAgICBiYWNrZ3JvdW5kOiBsaW5lYXItZ3JhZGllbnQoMGRlZywgJWNvbG9yOkRhcmsgT3ZlcmxheSAxJSwgJWNvbG9yOkRhcmsgT3ZlcmxheSAxJSksICVjb2xvcjpQcmltYXJ5JTsKICB9CiAgCiAgaHRtbDpub3QoLmRlc2lnbmVyKSAubmF2LWhvbGRlciB7CiAgICBkaXNwbGF5OiBibG9jazsKICB9CiAgaHRtbDpub3QoLmRlc2lnbmVyKSAubmF2LWhvbGRlciAubGVmdC1uYXYgewogICAgcG9zaXRpb246IGZpeGVkOwogICAgdG9wOiAwOwogICAgYm90dG9tOiAwOwogICAgd2lkdGg6IGNhbGMoMTAwJSAtIDU2cHgpOwogICAgbWF4LXdpZHRoOiAzNjBweDsKICAgIHotaW5kZXg6IDM7CiAgICBib3JkZXItcmlnaHQ6IG5vbmU7CiAgLyogMTZkcCAqLyBib3gtc2hhZG93OiAwIDE2cHggMjRweCAycHggcmdiYSgwLCAwLCAwLCAwLjE0KSwgMCA2cHggMzBweCA1cHggcmdiYSgwLCAwLCAwLCAwLjEyKSwgMCA4cHggMTBweCAtNXB4IHJnYmEoMCwgMCwgMCwgMC4yKTsKCiAgICBkaXNwbGF5OiBub25lOwogICAgdHJhbnNpdGlvbjogcmlnaHQgMC41czsKICB9CiAgCiAgaHRtbDpub3QoLmRlc2lnbmVyKSAubmF2LWhvbGRlciAubGVmdC1uYXYuc2hvd24gewogICAgZGlzcGxheTogYmxvY2s7CiAgfQogIAogIC5uYXYtc2hpZWxkLnNob3duIHsKICAgIGRpc3BsYXk6IGJsb2NrOwogICAgcG9zaXRpb246IGZpeGVkOwogICAgdG9wOiAwOwogICAgYm90dG9tOiAwOwogICAgbGVmdDogMDsKICAgIHJpZ2h0OiAwOwogICAgei1pbmRleDogMjsKICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEoMCwwLDAsMC4yKTsKICB9CiB9CgoubmF2LWhvbGRlciAubGVmdC1uYXYsIC5sZWZ0LW5hdi1wbGFjZWhvbGRlciB7CiAgZGlzcGxheTogZmxleDsKICBmbGV4LWRpcmVjdGlvbjogY29sdW1uOwogIGJhY2tncm91bmQ6IGxpbmVhci1ncmFkaWVudCgwZGVnLCAlY29sb3I6UHJpbWFyeSBPdmVybGF5IDElLCAlY29sb3I6UHJpbWFyeSBPdmVybGF5IDElKSwgJWNvbG9yOkJhY2tncm91bmQlOwogIGZvbnQtc2l6ZTogMTRweDsKICBmb250LXdlaWdodDogNTAwOwogIGNvbG9yOiAlY29sb3I6T24gU3VyZmFjZSBWYXJpYW50JTsKICBvdmVyZmxvdy14OiBoaWRkZW47CiAgb3ZlcmZsb3cteTogYXV0bzsKfQoKLmxlZnQtbmF2LXBsYWNlaG9sZGVyIHsKICBkaXNwbGF5OiBibG9jazsKICBwYWRkaW5nOiA4cHg7CiAgbGluZS1oZWlnaHQ6IDE7CiAgd2lkdGg6IDU4cHg7CiAgZmxleC1ncm93OiAxOwp9Ci5sZWZ0LW5hdi1wbGFjZWhvbGRlciAucHJvbXB0IHsKICBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7CiAgd2hpdGUtc3BhY2U6IG5vd3JhcDsKICB0cmFuc2Zvcm06IHRyYW5zbGF0ZSgtNTAlLDApIHJvdGF0ZSgtOTBkZWcpIHRyYW5zbGF0ZSgtNTAlLDApIHRyYW5zbGF0ZSgxNXB4LDE2cHgpOwogIHBhZGRpbmc6IDIxcHggMTZweDsKICBjb2xvcjogIzg4ODsKICBvdXRsaW5lOiAxcHggZG90dGVkICM4ODg7CiAgdmlzaWJpbGl0eTogaGlkZGVuOwp9CgouYW52aWwtaGlnaGxpZ2h0IC5sZWZ0LW5hdi1wbGFjZWhvbGRlciAucHJvbXB0IHsKICB2aXNpYmlsaXR5OiB2aXNpYmxlOwp9CgoubGVmdC1uYXYgPiAuY29sdW1uLXBhbmVsIHsKICBwYWRkaW5nOiAyNHB4IDA7Cn0KLmxlZnQtbmF2ID4gLmNvbHVtbi1wYW5lbCA+IC5hbnZpbC1wYW5lbC1zZWN0aW9uID4gLmFudmlsLXBhbmVsLXNlY3Rpb24tY29udGFpbmVyOm5vdCguZnVsbC13aWR0aC1yb3cpIHsKICBtYXJnaW46IDAgMTZweDsKICB3aWR0aDogaW5pdGlhbDsKICBtYXgtd2lkdGg6IGluaXRpYWw7CiAgb3ZlcmZsb3cteDogdmlzaWJsZTsKfQoubGVmdC1uYXYgPiAuY29sdW1uLXBhbmVsID4gLmFudmlsLXBhbmVsLXNlY3Rpb246Zmlyc3QtY2hpbGQgPiAuYW52aWwtcGFuZWwtc2VjdGlvbi1jb250YWluZXIuZnVsbC13aWR0aC1yb3cgewogIG1hcmdpbi10b3A6IC0yNHB4Owp9Ci5sZWZ0LW5hdiA+IC5jb2x1bW4tcGFuZWwgPiAuYW52aWwtcGFuZWwtc2VjdGlvbiA+IC5hbnZpbC1wYW5lbC1zZWN0aW9uLWNvbnRhaW5lciA+IC5hbnZpbC1wYW5lbC1zZWN0aW9uLWd1dHRlciA+IC5hbnZpbC1wYW5lbC1yb3cgPiAuYW52aWwtcGFuZWwtY29sIHsKICBvdmVyZmxvdy14OiB2aXNpYmxlOwp9CgovKiBNYWtlIGljb25zIGxvb2sgbmljZSAqLwoKLmFudmlsLWNvbXBvbmVudC1pY29uLmxlZnQtaWNvbiB7CiAgd2lkdGg6IDA7CiAgbWFyZ2luLXJpZ2h0OiAyMHB4ICFpbXBvcnRhbnQ7IAogIHBvc2l0aW9uOiByZWxhdGl2ZTsKfQoKLmFudmlsLWNvbXBvbmVudC1pY29uLmxlZnRfZWRnZS1pY29uLCAubGVmdC1uYXYgLmFudmlsLWNvbXBvbmVudC1pY29uLnJpZ2h0X2VkZ2UtaWNvbiB7CiAgbGVmdDogMTZweDsKICBwYWRkaW5nLXRvcDogMnB4OwogIHdpZHRoOiAwOwp9CgouYW52aWwtY29tcG9uZW50LWljb24ucmlnaHRfZWRnZS1pY29uIHsKICBsZWZ0OiBpbml0aWFsOwogIHJpZ2h0OiAxNnB4OwogIHRvcDogMDsKICBwYWRkaW5nLXRvcDogMnB4Owp9CgouaGFzLXRleHQgPiAuYW52aWwtY29tcG9uZW50LWljb24ubGVmdC1pY29uIHsKICAgIG1hcmdpbi1yaWdodDogMS4zZW0gIWltcG9ydGFudDsgCn0KCi8qIFNpZGViYXIgbGlua3MgKGFuZCBsYWJlbHMgd2l0aCBlZGdlIGljb25zKSBnbyArMTZweCB3aWRlcgogICAoVG9wLWxldmVsIGNvbHVtbnMgaW4gQ29sdW1uUGFuZWxzIGdldCBvdmVyZmxvdy14IHZpc2libGUgW3NlZSBhYm92ZV10byBlbmFibGUgdGhpcykKKi8KCi5sZWZ0LW5hdiBhLCAubGVmdC1uYXYgLmFudmlsLWxhYmVsLmxlZnRfZWRnZS1pY29uLCAubGVmdC1uYXYgLmFudmlsLWxhYmVsLnJpZ2h0X2VkZ2UtaWNvbiB7CiAgY29sb3I6IHJnYmEoMCwwLDAsMC44Nyk7CiAgbWFyZ2luOiAwIC0xNnB4OwogIHBhZGRpbmc6IDRweCAxNnB4Owp9CgoubGVmdC1uYXYgLmFudmlsLWNvbXBvbmVudC5sZWZ0X2VkZ2UtaWNvbiB7CiAgcGFkZGluZy1sZWZ0OiA3MnB4Owp9CgoubGVmdC1uYXYgLmFudmlsLXJvbGUtc2VsZWN0ZWQgewogIGNvbG9yOiAlY29sb3I6UHJpbWFyeSU7CiAgYmFja2dyb3VuZC1jb2xvcjogJWNvbG9yOkxpZ2h0IE92ZXJsYXkgMSU7Cn0KCi5kZXNpZ25lciAubmF2LWhvbGRlciAubGVmdC1uYXYgewogIG1pbi13aWR0aDogNTZweDsKfQoKLmRlc2lnbmVyIC5uYXYtaG9sZGVyIC5sZWZ0LW5hdiA+IC5hbnZpbC1jb21wb25lbnQgewogIG1pbi13aWR0aDogMTYwcHg7Cn0KCi5uYXYtaG9sZGVyIC5sZWZ0LW5hdiA+IC5hbnZpbC1jb21wb25lbnQgewogIG1hcmdpbi10b3A6IDA7CiAgbWFyZ2luLWJvdHRvbTogMDsKfQoKLm5hdi1ob2xkZXIgLmNvbnRlbnQgewogIGZsZXg6IDE7CiAgb3ZlcmZsb3cteDogaGlkZGVuOwp9CgoubmF2LWhvbGRlciA+IC5sb2dvID4gLnBsYWNlaG9sZGVyIHsgb3V0bGluZTogMXB4IGRvdHRlZDsgcGFkZGluZy1sZWZ0OiAxNnB4OyBwYWRkaW5nLXJpZ2h0OiAxNnB4OyBtYXJnaW46IDhweCA4cHggMDt9Cg==, id: YHRPJKIIYKWDQZUBLCIQ7MIUZQUXJWBB, name: theme.css}
+  parameters:
+    color_scheme:
+      colors:
+      - {color: '#1EB980', name: Primary}
+      - {color: '#005235', name: Primary Container}
+      - {color: '#003824', name: On Primary}
+      - {color: '#73FBBC', name: On Primary Container}
+      - {color: '#B4CCBC', name: Secondary}
+      - {color: '#364B3F', name: Secondary Container}
+      - {color: '#20352A', name: On Secondary}
+      - {color: '#D0E8D8', name: On Secondary Container}
+      - {color: '#A4CDDD', name: Tertiary}
+      - {color: '#234C5A', name: Tertiary Container}
+      - {color: '#063542', name: On Tertiary}
+      - {color: '#C0E9FA', name: On Tertiary Container}
+      - {color: '#D64D47', name: Error}
+      - {color: '#191C1A', name: Background}
+      - {color: '#191C1A', name: Surface}
+      - {color: '#E1E3DF', name: On Background}
+      - {color: '#E1E3DF', name: On Surface}
+      - {color: '#404943', name: Surface Variant}
+      - {color: '#C0C9C1', name: On Surface Variant}
+      - {color: '#8A938C', name: Outline}
+      - {color: 'rgba(208, 232, 216, 0.2)', name: Dark Overlay 1}
+      - {color: 'rgba(208, 232, 216, 0.5)', name: Dark Overlay 2}
+      - {color: 'rgba(208, 232, 216, 0.2)', name: Light Overlay 1}
+      - {color: 'rgba(208, 232, 216, 0.5)', name: Light Overlay 2}
+      - {color: 'rgba(133, 133, 139, 0.12)', name: Disabled Container}
+      - {color: '#85858B', name: On Disabled}
+      - {color: 'rgba(30, 185, 128, 0.05)', name: Primary Overlay 1}
+      - {color: 'rgba(30, 185, 128, 0.08)', name: Primary Overlay 2}
+      - {color: 'rgba(30, 185, 128, 0.11)', name: Primary Overlay 3}
+      preset_groups:
+      - name: Colour Scheme
+        options:
+        - colors:
+          - {color: '#6750A4', name: Primary}
+          - {color: '#EADDFF', name: Primary Container}
+          - {color: '#FFFFFF', name: On Primary}
+          - {color: '#21005E', name: On Primary Container}
+          - {color: '#625B71', name: Secondary}
+          - {color: '#E8DEF8', name: Secondary Container}
+          - {color: '#FFFFFF', name: On Secondary}
+          - {color: '#1E192B', name: On Secondary Container}
+          - {color: '#7D5260', name: Tertiary}
+          - {color: '#FFD8E4', name: Tertiary Container}
+          - {color: '#FFFFFF', name: On Tertiary}
+          - {color: '#370B1E', name: On Tertiary Container}
+          - {color: '#B3261E', name: Error}
+          - {color: '#FFFBFE', name: Background}
+          - {color: '#FFFBFE', name: Surface}
+          - {color: '#1C1B1F', name: On Background}
+          - {color: '#1C1B1F', name: On Surface}
+          - {color: '#E7E0EC', name: Surface Variant}
+          - {color: '#49454E', name: On Surface Variant}
+          - {color: '#79747E', name: Outline}
+          - {color: 'rgba(28, 27, 31, 0.38)', name: On Disabled}
+          - {color: 'rgba(28, 27, 31, 0.12)', name: Disabled Container}
+          - {color: 'rgba(255, 255, 255, 0.08)', name: Light Overlay 1}
+          - {color: 'rgba(255, 255, 255, 0.12)', name: Light Overlay 2}
+          - {color: 'rgba(30, 25, 43, 0.08)', name: Dark Overlay 1}
+          - {color: 'rgba(30, 25, 43, 0.12)', name: Dark Overlay 2}
+          - {color: 'rgba(103, 80, 164, 0.05)', name: Primary Overlay 1}
+          - {color: 'rgba(103, 80, 164, 0.08)', name: Primary Overlay 2}
+          - {color: 'rgba(103, 80, 164, 0.11)', name: Primary Overlay 3}
+          name: Material Light
+        - colors:
+          - {color: '#D0BCFF', name: Primary}
+          - {color: '#4F378B', name: Primary Container}
+          - {color: '#371E73', name: On Primary}
+          - {color: '#EADDFF', name: On Primary Container}
+          - {color: '#CCC2DC', name: Secondary}
+          - {color: '#4A4458', name: Secondary Container}
+          - {color: '#332D41', name: On Secondary}
+          - {color: '#E8DEF8', name: On Secondary Container}
+          - {color: '#EFB8C8', name: Tertiary}
+          - {color: '#633B48', name: Tertiary Container}
+          - {color: '#492532', name: On Tertiary}
+          - {color: '#FFD8E4', name: On Tertiary Container}
+          - {color: '#F2B8B5', name: Error}
+          - {color: '#1C1B1F', name: Background}
+          - {color: '#1C1B1F', name: Surface}
+          - {color: '#E6E1E5', name: On Background}
+          - {color: '#E6E1E5', name: On Surface}
+          - {color: '#49454F', name: Surface Variant}
+          - {color: '#CAC4D0', name: On Surface Variant}
+          - {color: '#938F99', name: Outline}
+          - {color: 'rgba(230, 225, 229, 0.38)', name: On Disabled}
+          - {color: 'rgba(230, 225, 229, 0.12)', name: Disabled Container}
+          - {color: 'rgba(232, 222, 248, 0.08)', name: Light Overlay 1}
+          - {color: 'rgba(232, 222, 248, 0.12)', name: Light Overlay 2}
+          - {color: 'rgba(232, 222, 248, 0.08)', name: Dark Overlay 1}
+          - {color: 'rgba(232, 222, 248, 0.12)', name: Dark Overlay 2}
+          - {color: 'rgba(208, 188, 255, 0.05)', name: Primary Overlay 1}
+          - {color: 'rgba(208, 188, 255, 0.08)', name: Primary Overlay 2}
+          - {color: 'rgba(208, 188, 255, 0.11)', name: Primary Overlay 3}
+          name: Material Dark
+        - colors:
+          - {color: '#1EB980', name: Primary}
+          - {color: '#005235', name: Primary Container}
+          - {color: '#003824', name: On Primary}
+          - {color: '#73FBBC', name: On Primary Container}
+          - {color: '#B4CCBC', name: Secondary}
+          - {color: '#364B3F', name: Secondary Container}
+          - {color: '#20352A', name: On Secondary}
+          - {color: '#D0E8D8', name: On Secondary Container}
+          - {color: '#A4CDDD', name: Tertiary}
+          - {color: '#234C5A', name: Tertiary Container}
+          - {color: '#063542', name: On Tertiary}
+          - {color: '#C0E9FA', name: On Tertiary Container}
+          - {color: '#D64D47', name: Error}
+          - {color: '#191C1A', name: Background}
+          - {color: '#191C1A', name: Surface}
+          - {color: '#E1E3DF', name: On Background}
+          - {color: '#E1E3DF', name: On Surface}
+          - {color: '#404943', name: Surface Variant}
+          - {color: '#C0C9C1', name: On Surface Variant}
+          - {color: '#8A938C', name: Outline}
+          - {color: 'rgba(208, 232, 216, 0.2)', name: Dark Overlay 1}
+          - {color: 'rgba(208, 232, 216, 0.5)', name: Dark Overlay 2}
+          - {color: 'rgba(208, 232, 216, 0.2)', name: Light Overlay 1}
+          - {color: 'rgba(208, 232, 216, 0.5)', name: Light Overlay 2}
+          - {color: 'rgba(133, 133, 139, 0.12)', name: Disabled Container}
+          - {color: '#85858B', name: On Disabled}
+          - {color: 'rgba(30, 185, 128, 0.05)', name: Primary Overlay 1}
+          - {color: 'rgba(30, 185, 128, 0.08)', name: Primary Overlay 2}
+          - {color: 'rgba(30, 185, 128, 0.11)', name: Primary Overlay 3}
+          name: Rally Dark
+        - colors:
+          - {color: '#006C48', name: Primary}
+          - {color: '#00A36C', name: Primary Container}
+          - {color: '#FFFFFF', name: On Primary}
+          - {color: '#002113', name: On Primary Container}
+          - {color: '#496455', name: Secondary}
+          - {color: '#CBEAD6', name: Secondary Container}
+          - {color: '#FFFFFF', name: On Secondary}
+          - {color: '#052014', name: On Secondary Container}
+          - {color: '#326576', name: Tertiary}
+          - {color: '#B8EAFF', name: Tertiary Container}
+          - {color: '#FFFFFF', name: On Tertiary}
+          - {color: '#001F28', name: On Tertiary Container}
+          - {color: '#D64D47', name: Error}
+          - {color: '#FBFDF8', name: Background}
+          - {color: '#FBFDF8', name: Surface}
+          - {color: '#191C1A', name: On Background}
+          - {color: '#191C1A', name: On Surface}
+          - {color: '#DCE5DD', name: Surface Variant}
+          - {color: '#404943', name: On Surface Variant}
+          - {color: '#707973', name: Outline}
+          - {color: 'rgba(5, 32, 20, 0.8)', name: Dark Overlay 1}
+          - {color: 'rgba(51, 51, 61, 0.12)', name: Dark Overlay 2}
+          - {color: 'rgba(255, 255, 255, 0.8)', name: Light Overlay 1}
+          - {color: 'rgba(255, 255, 255, 0.12)', name: Light Overlay 2}
+          - {color: 'rgba(25, 28, 26, 0.12)', name: Disabled Container}
+          - {color: 'rgba(25, 28, 26, 0.38)', name: On Disabled}
+          - {color: 'rgba(0, 108, 72, 0.05)', name: Primary Overlay 1}
+          - {color: 'rgba(0, 108, 72, 0.08)', name: Primary Overlay 2}
+          - {color: 'rgba(0, 108, 72, 0.11)', name: Primary Overlay 3}
+          name: Rally Light
+        - colors:
+          - {color: '#006874', name: Primary}
+          - {color: '#96F0FF', name: Primary Container}
+          - {color: '#FFFFFF', name: On Primary}
+          - {color: '#001F24', name: On Primary Container}
+          - {color: '#486367', name: Secondary}
+          - {color: '#CBE8ED', name: Secondary Container}
+          - {color: '#FFFFFF', name: On Secondary}
+          - {color: '#031F23', name: On Secondary Container}
+          - {color: '#515E80', name: Tertiary}
+          - {color: '#DAE2FF', name: Tertiary Container}
+          - {color: '#FFFFFF', name: On Tertiary}
+          - {color: '#0C1A39', name: On Tertiary Container}
+          - {color: '#BA1A1A', name: Error}
+          - {color: '#FAFDFD', name: Background}
+          - {color: '#FAFDFD', name: Surface}
+          - {color: '#191C1D', name: On Background}
+          - {color: '#191C1D', name: On Surface}
+          - {color: '#DBE4E6', name: Surface Variant}
+          - {color: '#3F484A', name: On Surface Variant}
+          - {color: '#6F797A', name: Outline}
+          - {color: 'rgba(25, 28, 29, 0.38)', name: On Disabled}
+          - {color: 'rgba(25, 28, 29, 0.12)', name: Disabled Container}
+          - {color: 'rgba(255, 255, 255, 0.08)', name: Light Overlay 1}
+          - {color: 'rgba(255, 255, 255, 0.12)', name: Light Overlay 2}
+          - {color: 'rgba(3, 31, 35, 0.08)', name: Dark Overlay 1}
+          - {color: 'rgba(3, 31, 35, 0.12)', name: Dark Overlay 2}
+          - {color: 'rgba(0, 104, 116, 0.05)', name: Primary Overlay 1}
+          - {color: 'rgba(0, 104, 116, 0.08)', name: Primary Overlay 2}
+          - {color: 'rgba(0, 104, 116, 0.11)', name: Primary Overlay 3}
+          name: Mykonos Light
+        - colors:
+          - {color: '#3CD9ED', name: Primary}
+          - {color: '#004F57', name: Primary Container}
+          - {color: '#00363D', name: On Primary}
+          - {color: '#96F0FF', name: On Primary Container}
+          - {color: '#AFCBD0', name: Secondary}
+          - {color: '#314B4F', name: Secondary Container}
+          - {color: '#1A3438', name: On Secondary}
+          - {color: '#CBE8ED', name: On Secondary Container}
+          - {color: '#B9C6ED', name: Tertiary}
+          - {color: '#394667', name: Tertiary Container}
+          - {color: '#23304F', name: On Tertiary}
+          - {color: '##DAE2FF', name: On Tertiary Container}
+          - {color: '#FFB4AB', name: Error}
+          - {color: '#191C1D', name: Background}
+          - {color: '#191C1D', name: Surface}
+          - {color: '#E1E3E3', name: On Background}
+          - {color: '#E1E3E3', name: On Surface}
+          - {color: '#3F484A', name: Surface Variant}
+          - {color: '#BFC8CA', name: On Surface Variant}
+          - {color: '#899294', name: Outline}
+          - {color: 'rgba(225, 227, 227, 0.38)', name: On Disabled}
+          - {color: 'rgba(225, 227, 227, 0.12)', name: Disabled Container}
+          - {color: 'rgba(203, 232, 237, 0.08)', name: Light Overlay 1}
+          - {color: 'rgba(203, 232, 237, 0.12)', name: Light Overlay 2}
+          - {color: 'rgba(203, 232, 237, 0.08)', name: Dark Overlay 1}
+          - {color: 'rgba(203, 232, 237, 0.12)', name: Dark Overlay 2}
+          - {color: 'rgba(60, 217, 237, 0.05)', name: Primary Overlay 1}
+          - {color: 'rgba(60, 217, 237, 0.08)', name: Primary Overlay 2}
+          - {color: 'rgba(60, 217, 237, 0.11)', name: Primary Overlay 3}
+          name: Mykonos Dark
+        - colors:
+          - {color: '#9A4523', name: Primary}
+          - {color: '#FFDBCF', name: Primary Container}
+          - {color: '#FFFFFF', name: On Primary}
+          - {color: '#380D00', name: On Primary Container}
+          - {color: '#77574C', name: Secondary}
+          - {color: '#FFDBCF', name: Secondary Container}
+          - {color: '#FFFFFF', name: On Secondary}
+          - {color: '#2C160D', name: On Secondary Container}
+          - {color: '#695E2F', name: Tertiary}
+          - {color: '#F2E2A7', name: Tertiary Container}
+          - {color: '#FFFFFF', name: On Tertiary}
+          - {color: '#221B00', name: On Tertiary Container}
+          - {color: '#BA1A1A', name: Error}
+          - {color: '#FFFBFF', name: Background}
+          - {color: '#FFFBFF', name: Surface}
+          - {color: '#201A18', name: On Background}
+          - {color: '#201A18', name: On Surface}
+          - {color: '#F5DED6', name: Surface Variant}
+          - {color: '#53433E', name: On Surface Variant}
+          - {color: '#85736D', name: Outline}
+          - {color: 'rgba(32, 26, 24, 0.38)', name: On Disabled}
+          - {color: 'rgba(32, 26, 24, 0.12)', name: Disabled Container}
+          - {color: 'rgba(255, 255, 255, 0.08)', name: Light Overlay 1}
+          - {color: 'rgba(255, 255, 255, 0.12)', name: Light Overlay 2}
+          - {color: 'rgba(44, 22, 13, 0.08)', name: Dark Overlay 1}
+          - {color: 'rgba(44, 22, 13, 0.12)', name: Dark Overlay 2}
+          - {color: 'rgba(154, 69, 35, 0.05)', name: Primary Overlay 1}
+          - {color: 'rgba(154, 69, 35, 0.08)', name: Primary Overlay 2}
+          - {color: 'rgba(154, 69, 35, 0.11)', name: Primary Overlay 3}
+          name: Manarola Light
+        - colors:
+          - {color: '#FFB59B', name: Primary}
+          - {color: '#7B2E0E', name: Primary Container}
+          - {color: '#5B1A00', name: On Primary}
+          - {color: '#FFDBCF', name: On Primary Container}
+          - {color: '#E7BDB0', name: Secondary}
+          - {color: '#5D4036', name: Secondary Container}
+          - {color: '#442A21', name: On Secondary}
+          - {color: '#FFDBCF', name: On Secondary Container}
+          - {color: '#D5C68E', name: Tertiary}
+          - {color: '#50461A', name: Tertiary Container}
+          - {color: '#393005', name: On Tertiary}
+          - {color: '#F2E2A7', name: On Tertiary Container}
+          - {color: '#FFB4AB', name: Error}
+          - {color: '#201A18', name: Background}
+          - {color: '#201A18', name: Surface}
+          - {color: '#EDE0DC', name: On Background}
+          - {color: '#EDE0DC', name: On Surface}
+          - {color: '#53433E', name: Surface Variant}
+          - {color: '#D8C2BB', name: On Surface Variant}
+          - {color: '#A08D86', name: Outline}
+          - {color: 'rgba(237, 224, 220, 0.38)', name: On Disabled}
+          - {color: 'rgba(237, 224, 220, 0.12)', name: Disabled Container}
+          - {color: 'rgba(255, 219, 207, 0.08)', name: Light Overlay 1}
+          - {color: 'rgba(255, 219, 207, 0.12)', name: Light Overlay 2}
+          - {color: 'rgba(255, 219, 207, 0.08)', name: Dark Overlay 1}
+          - {color: 'rgba(255, 219, 207, 0.12)', name: Dark Overlay 2}
+          - {color: 'rgba(255, 181, 155, 0.05)', name: Primary Overlay 1}
+          - {color: 'rgba(255, 181, 155, 0.08)', name: Primary Overlay 2}
+          - {color: 'rgba(255, 181, 155, 0.11)', name: Primary Overlay 3}
+          name: Manarola Dark
+    roles:
+    - components: [Button, FileLoader]
+      name: filled
+    - components: [Button, FileLoader]
+      display_in_toolbox: false
+      name: outlined
+    - components: [TextBox, TextArea, DatePicker]
+      name: input-error
+    - components: [ColumnPanel]
+      display_in_toolbox: true
+      name: card
+      title: Card
+    - components: [Label, Link]
+      name: display
+    - components: [Label, Link]
+      name: headline
+    - components: [Label, Link]
+      name: title
+    - components: [Label, Link]
+      name: body
+    - components: [Label, Link]
+      name: input-prompt
+  templates:
+  - description: A page with an a left-side navigation panel.
+    form:
+      class_name: Form
+      code: "from ._anvil_designer import $NAME$Template\nfrom anvil import *\n\nclass $NAME$($NAME$Template):\n\n  def __init__(self, **properties):\n    # Set Form properties and Data Bindings.\n    self.init_components(**properties)\n\n    # Any code you write here will run before the form opens.\n    \n"
+      components:
+      - layout_properties: {slot: default}
+        name: content_panel
+        properties: {}
+        type: ColumnPanel
+      container:
+        properties: {html: '@theme:standard-page.html'}
+        type: HtmlTemplate
+      is_package: true
+    img: /img/form-templates/rally.png
+    name: Standard Page
